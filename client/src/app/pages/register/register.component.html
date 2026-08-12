@@ -1,0 +1,81 @@
+<div class="register-container">
+  <!-- Interactive animated background blobs (Paint splashes) -->
+  <div class="paint-blob blob-1"></div>
+  <div class="paint-blob blob-2"></div>
+  <div class="paint-blob blob-3"></div>
+
+  <div class="glass-card">
+    <div class="card-header">
+      <h2>Welcome to the Studio</h2>
+      <p>Sign up to start visualizing your smart walls.</p>
+    </div>
+
+    <!-- Display messages -->
+    <div *ngIf="errorMessage" class="error-message" style="color: #ff4d4d; background: rgba(255, 77, 77, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="success-message" style="color: #4CAF50; background: rgba(76, 175, 80, 0.1); padding: 10px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
+      {{ successMessage }}
+    </div>
+
+    <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="input-group">
+        <label for="name">Full Name</label>
+        <div class="input-wrapper">
+          <input type="text" id="name" formControlName="name" placeholder="John Doe" />
+          <span class="focus-border"></span>
+        </div>
+        <div *ngIf="registerForm.get('name')?.invalid && (registerForm.get('name')?.dirty || registerForm.get('name')?.touched)" class="validation-error" style="color: #ff4d4d; font-size: 12px; margin-top: 5px;">
+          <span *ngIf="registerForm.get('name')?.errors?.['required']">Name is required.</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <input type="email" id="email" formControlName="email" placeholder="john@example.com" />
+          <span class="focus-border"></span>
+        </div>
+        <div *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)" class="validation-error" style="color: #ff4d4d; font-size: 12px; margin-top: 5px;">
+          <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="registerForm.get('email')?.errors?.['email']">Please enter a valid email.</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="password" formControlName="password" placeholder="Create a strong password" />
+          <span class="focus-border"></span>
+        </div>
+        <div *ngIf="registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)" class="validation-error" style="color: #ff4d4d; font-size: 12px; margin-top: 5px;">
+          <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</span>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm your password" />
+          <span class="focus-border"></span>
+        </div>
+        <div *ngIf="registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)" class="validation-error" style="color: #ff4d4d; font-size: 12px; margin-top: 5px;">
+          <span *ngIf="registerForm.get('confirmPassword')?.errors?.['required']">Please confirm your password.</span>
+        </div>
+        <div *ngIf="registerForm.hasError('mismatch') && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)" class="validation-error" style="color: #ff4d4d; font-size: 12px; margin-top: 5px;">
+          <span>Passwords do not match.</span>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-register" [disabled]="registerForm.invalid">
+        <span class="btn-text">Start Visualizing</span>
+        <div class="btn-paint-effect"></div>
+      </button>
+    </form>
+
+    <div class="card-footer">
+      <p>Already a member? <a routerLink="/login">Sign In</a></p>
+    </div>
+  </div>
+</div>
