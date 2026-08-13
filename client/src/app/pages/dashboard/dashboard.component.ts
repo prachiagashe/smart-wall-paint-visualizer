@@ -13,6 +13,8 @@ export class DashboardComponent implements OnInit {
   sliderPosition = 50;
 
   selectedHeroColor = '#879C76'; // Default Sage Green
+  selectedSliderColor = '#8FA9B8'; // Default Ocean Breeze
+
   heroColors = [
     { name: 'Sage Green', hex: '#879C76' },
     { name: 'Terracotta', hex: '#B96545' },
@@ -23,6 +25,10 @@ export class DashboardComponent implements OnInit {
 
   selectHeroColor(hex: string) {
     this.selectedHeroColor = hex;
+  }
+
+  selectSliderColor(hex: string) {
+    this.selectedSliderColor = hex;
   }
 
   colors = [

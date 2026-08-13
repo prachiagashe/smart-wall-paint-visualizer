@@ -1,0 +1,98 @@
+<div class="page-container">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      </div>
+      <div class="logo-text">
+        <span class="brand-name">SmartPaint</span>
+        <span class="brand-sub">SMART WALL PAINT VISUALIZER</span>
+      </div>
+    </div>
+
+    <nav class="main-nav">
+      <a routerLink="/">Home</a>
+      <a routerLink="/how-it-works">How It Works</a>
+      <a routerLink="/colors">Colors</a>
+      <a href="#">My Projects</a>
+    </nav>
+
+    <div class="header-actions">
+      <a routerLink="/register" class="login-link">Login</a>
+      <button class="btn-primary">Get Started</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="upload-main">
+    <div class="hero-section">
+      <div class="hero-content">
+        <span class="step-tag">STEP 1 OF 4</span>
+        <h1>Upload Your Room</h1>
+        <p>Upload a clear photo of the room you want to visualize.</p>
+      </div>
+      <div class="hero-action">
+        <button class="btn-outline-primary photo-tips-btn">Photo tips</button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Left Column: Upload Zone -->
+      <div class="upload-column">
+        <div class="upload-zone">
+          <div class="icon-circle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 16 4-4 4 4"/></svg>
+          </div>
+          <h2>Drag and drop your room photo</h2>
+          <p class="upload-hint">Upload JPG or PNG - Maximum recommended size: 10 MB</p>
+          <button class="btn-primary btn-choose">Choose Image</button>
+
+          <div class="sample-rooms">
+            <p>No photo handy? Try a sample room</p>
+            <div class="thumbnails">
+              <div class="thumbnail" *ngFor="let img of sampleImages">
+                <img [src]="img" alt="Sample Room">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Settings & Info -->
+      <div class="info-column">
+        <!-- Room Type Card -->
+        <div class="info-card room-type-card">
+          <label>Room type</label>
+          <div class="select-wrapper">
+            <select>
+              <option>Living Room</option>
+              <option>Bedroom</option>
+              <option>Kitchen</option>
+              <option>Bathroom</option>
+              <option>Other</option>
+            </select>
+            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </div>
+          <p class="help-text">Used to organise your saved designs in My Projects.</p>
+        </div>
+
+        <!-- Tips Card -->
+        <div class="info-card tips-card">
+          <h3>For the best preview</h3>
+          <ul class="tips-list">
+            <li>Shoot in daylight with the lights on.</li>
+            <li>Stand square to the wall you want to paint.</li>
+            <li>Keep furniture and artwork in frame &mdash; it makes the result believable.</li>
+            <li>Avoid strong shadows across the wall surface.</li>
+          </ul>
+        </div>
+
+        <!-- Privacy Banner -->
+        <div class="privacy-banner">
+          <p>Your photo never leaves your device in this demo &mdash; it is stored only in your browser.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
