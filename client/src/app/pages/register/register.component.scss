@@ -1,92 +1,247 @@
-.register-container {
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+$primary-green: #4a6741;
+$text-dark: #1a202c;
+$text-gray: #718096;
+$border-color: #e2e8f0;
+$bg-right: #f8f9fa;
+$bg-left: #ffffff;
+
+:host {
+  display: block;
   min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.split-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  @media (min-width: 1024px) {
+    flex-direction: row;
+  }
+}
+
+/* -------------------------------------
+ * Left Panel
+ * ------------------------------------- */
+.left-panel {
+  flex: 1;
+  background-color: $bg-left;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0.8) 45%, rgba(255, 255, 255, 0) 70%),
+    url('../../../assets/room-bg.png');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  position: relative;
+  
+  display: flex;
+  align-items: center;
+  padding: 3rem;
+
+  @media (min-width: 1024px) {
+    padding-left: 5rem;
+    padding-right: 40%; /* Keeps text on the left side where the image is bright */
+  }
+}
+
+.left-content {
+  background: rgba(255, 255, 255, 0.85); /* Fallback for contrast if image is dark */
+  backdrop-filter: blur(5px);
+  padding: 2rem;
+  border-radius: 16px;
+  max-width: 500px;
+  position: relative;
+  z-index: 2;
+
+  /* On large screens if the image naturally provides a white left background, we can remove the card look */
+  @media (min-width: 1200px) {
+    background: transparent;
+    backdrop-filter: none;
+    padding: 0;
+  }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  margin-bottom: 3rem;
+
+  .logo-icon {
+    color: $primary-green;
+    width: 36px;
+    height: 36px;
+    margin-right: 12px;
+  }
+
+  .logo-text {
+    display: flex;
+    flex-direction: column;
+    color: $text-dark;
+    line-height: 1.1;
+
+    .brand-name {
+      font-size: 1.25rem;
+      strong {
+        font-weight: 700;
+        color: #1a202c;
+      }
+      color: $primary-green;
+    }
+    
+    .brand-sub {
+      font-size: 1rem;
+      font-weight: 500;
+      color: $text-gray;
+    }
+  }
+}
+
+.main-heading {
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: $text-dark;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+
+  .text-green {
+    color: $primary-green;
+  }
+}
+
+.description {
+  font-size: 1.1rem;
+  color: $text-dark;
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+  max-width: 90%;
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+
+    .feature-icon {
+      background-color: $primary-green;
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+
+    .feature-text {
+      h4 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: $text-dark;
+        margin: 0 0 0.25rem 0;
+      }
+      p {
+        font-size: 0.9rem;
+        color: #4a5568;
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+  }
+}
+
+.popular-colors-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: inline-flex;
+  flex-direction: column;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  position: relative;
+  
+  .card-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $text-dark;
+    margin-bottom: 1rem;
+  }
+
+  .swatches {
+    display: flex;
+    gap: 0.75rem;
+
+    .swatch {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    }
+  }
+
+  .roller-graphic {
+    position: absolute;
+    right: -15px;
+    top: -15px;
+    background: #f0fdf4;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+}
+
+/* -------------------------------------
+ * Right Panel
+ * ------------------------------------- */
+.right-panel {
+  flex: 0 0 500px;
+  background-color: $bg-right;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0f172a; /* Deep slate base */
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 20px;
-  position: relative;
-  overflow: hidden;
+  padding: 2rem;
+
+  @media (min-width: 1024px) {
+    padding: 3rem;
+  }
 }
 
-/* --- Animated Paint Blobs Background --- */
-.paint-blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  z-index: 0;
-  opacity: 0.6;
-  animation: float 20s infinite alternate ease-in-out;
-}
-
-.blob-1 {
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, #ec4899, #8b5cf6);
-  top: -10%;
-  left: -5%;
-  animation-delay: 0s;
-}
-
-.blob-2 {
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, #3b82f6, #14b8a6);
-  bottom: -20%;
-  right: -10%;
-  animation-delay: -5s;
-}
-
-.blob-3 {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, #f59e0b, #ef4444);
-  top: 40%;
-  left: 60%;
-  animation-delay: -10s;
-}
-
-@keyframes float {
-  0% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0, 0) scale(1); }
-}
-
-/* --- Glassmorphism Card --- */
-.glass-card {
-  position: relative;
-  z-index: 1;
-  background: rgba(255, 255, 255, 0.05); /* very light transparent white */
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  border-radius: 24px;
-  padding: 48px;
+.form-container {
+  background: white;
   width: 100%;
   max-width: 440px;
-  color: #f8fafc;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f5f9;
 }
 
-.card-header {
+.form-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 2rem;
 
   h2 {
-    font-size: 32px;
-    font-weight: 800;
-    margin: 0 0 12px 0;
-    background: linear-gradient(to right, #fff, #cbd5e1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -0.5px;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: $text-dark;
+    margin: 0 0 0.5rem 0;
   }
 
   p {
-    font-size: 15px;
-    color: #94a3b8;
+    color: $text-gray;
+    font-size: 1rem;
     margin: 0;
   }
 }
@@ -94,132 +249,190 @@
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 1.25rem;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 
   label {
-    font-size: 14px;
+    font-size: 0.85rem;
     font-weight: 600;
-    color: #cbd5e1;
-    margin-left: 4px;
-  }
-}
-
-/* --- Interactive Input Fields --- */
-.input-wrapper {
-  position: relative;
-
-  input {
-    width: 100%;
-    background: rgba(15, 23, 42, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 16px 20px;
-    color: #fff;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    outline: none;
-
-    &::placeholder {
-      color: #64748b;
-    }
-
-    &:focus {
-      background: rgba(15, 23, 42, 0.6);
-      border-color: transparent;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
+    color: $text-dark;
+    margin-bottom: 0.5rem;
   }
 
-  /* Animated bottom border on focus */
-  .focus-border {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 0 0 12px 12px;
-    transform: translateX(-50%);
-  }
-
-  input:focus ~ .focus-border {
-    width: 100%;
-  }
-}
-
-/* --- Dynamic Register Button --- */
-.btn-register {
-  position: relative;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  border-radius: 12px;
-  padding: 18px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 16px;
-  transition: all 0.3s ease;
-
-  .btn-text {
+  .input-wrapper {
     position: relative;
-    z-index: 2;
-  }
+    display: flex;
+    align-items: center;
 
-  /* Paint fill effect on hover */
-  .btn-paint-effect {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6);
-    z-index: 1;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  &:hover {
-    border-color: transparent;
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(139, 92, 246, 0.4);
-
-    .btn-paint-effect {
-      transform: scaleX(1);
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      color: $text-gray;
+      display: flex;
     }
-  }
 
-  &:active {
-    transform: translateY(0);
-  }
-}
+    .input-icon-right {
+      position: absolute;
+      right: 1rem;
+      color: $text-gray;
+      display: flex;
+      cursor: pointer;
+    }
 
-.card-footer {
-  text-align: center;
-  margin-top: 32px;
+    input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.75rem;
+      border: 1px solid $border-color;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: $text-dark;
+      outline: none;
+      transition: all 0.2s;
 
-  p {
-    font-size: 14px;
-    color: #94a3b8;
-    
-    a {
-      color: #8b5cf6;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s ease;
+      &::placeholder {
+        color: #a0aec0;
+      }
 
-      &:hover {
-        color: #ec4899;
+      &:focus {
+        border-color: $primary-green;
+        box-shadow: 0 0 0 3px rgba(74, 103, 65, 0.1);
       }
     }
+  }
+}
+
+.validation-error {
+  color: #e53e3e;
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+}
+
+.btn-primary {
+  background-color: $primary-green;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.2s;
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-green, 5%);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: $text-gray;
+  font-size: 0.9rem;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid $border-color;
+  }
+
+  span {
+    padding: 0 10px;
+  }
+}
+
+.login-prompt {
+  text-align: center;
+  margin-bottom: 1.5rem;
+
+  p {
+    color: $text-dark;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .btn-outline {
+    width: 100%;
+    background-color: white;
+    color: $primary-green;
+    border: 1px solid $primary-green;
+    border-radius: 8px;
+    padding: 0.85rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: rgba(74, 103, 65, 0.05);
+    }
+  }
+}
+
+.footer-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary-green;
+  font-size: 0.8rem;
+  font-weight: 500;
+
+  svg {
+    margin-right: 6px;
+  }
+}
+
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.error-message {
+  background: #fff5f5;
+  color: #c53030;
+  border: 1px solid #feb2b2;
+}
+
+.success-message {
+  background: #f0fff4;
+  color: #276749;
+  border: 1px solid #9ae6b4;
+}
+
+/* Animations for mode switching */
+.form-header, .register-form, .divider, .login-prompt {
+  animation: fadeIn 0.35s ease-out;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
   }
 }

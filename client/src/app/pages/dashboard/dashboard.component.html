@@ -1,0 +1,360 @@
+<div class="dashboard-page">
+  
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      </div>
+      <div class="logo-text">
+        <span class="brand-name">SmartPaint</span>
+        <span class="brand-sub">SMART WALL PAINT VISUALIZER</span>
+      </div>
+    </div>
+
+    <nav class="main-nav">
+      <a href="#" class="active">Home</a>
+      <a href="#">How It Works</a>
+      <a href="#">Colors</a>
+      <a href="#">My Projects</a>
+    </nav>
+
+    <div class="header-actions">
+      <a routerLink="/register" class="login-link">Login</a>
+      <button class="btn-primary">Get Started</button>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <div class="badge">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+        Phase 1 - Interactive demo
+      </div>
+      
+      <h1 class="main-heading">
+        Visualize<br>
+        Your Perfect<br>
+        Wall Before<br>
+        You Paint
+      </h1>
+
+      <p class="hero-description">
+        Upload your room, explore beautiful wall colors, and preview your perfect design before making a final decision.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn-primary">Visualize My Room &rarr;</button>
+        <button class="btn-outline">Explore Colors</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat">
+          <h3>120+</h3>
+          <p>Curated shades</p>
+        </div>
+        <div class="stat">
+          <h3>3</h3>
+          <p>Paint finishes</p>
+        </div>
+        <div class="stat">
+          <h3>&lt; 30s</h3>
+          <p>To first preview</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="visual-card">
+        <div class="image-wrapper">
+          <img src="assets/images/hero-room.png" alt="Living Room" class="room-img" />
+          <div class="green-overlay" [style.background-color]="selectedHeroColor"></div>
+          <div class="before-after-pill">Before &rarr; After</div>
+        </div>
+        <div class="floating-colors">
+          <span>POPULAR COLORS</span>
+          <div class="color-dots">
+            <div class="dot" 
+                 *ngFor="let c of heroColors"
+                 [style.background-color]="c.hex"
+                 [class.active]="c.hex === selectedHeroColor"
+                 (click)="selectHeroColor(c.hex)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works-section">
+    <div class="section-header">
+      <span class="section-tag">SIMPLE BY DESIGN</span>
+      <h2>How It Works</h2>
+      <p>Four steps between a plain wall and a decision you feel confident about.</p>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="step-num">01</div>
+        </div>
+        <h3>Upload Your Room</h3>
+        <p>Upload a clear photo of your room.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12a10 10 0 1 0 20 0 10 10 0 1 0-20 0"/><path d="M12 2v20"/><path d="M2 12h20"/></svg>
+          </div>
+          <div class="step-num">02</div>
+        </div>
+        <h3>Select Your Wall</h3>
+        <p>Use our simple selection tools to mark the wall.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+          </div>
+          <div class="step-num">03</div>
+        </div>
+        <h3>Choose Your Color</h3>
+        <p>Explore different shades, finishes and designs.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header">
+          <div class="step-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+          </div>
+          <div class="step-num">04</div>
+        </div>
+        <h3>Save & Compare</h3>
+        <p>Save your favorite designs and compare them later.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Color Library Section -->
+  <section class="color-library-section">
+    <div class="section-header">
+      <span class="section-tag">COLOR LIBRARY</span>
+      <h2>Explore Popular Colors</h2>
+      <p>Every shade includes its hex value, category and available finishes.</p>
+    </div>
+
+    <div class="colors-grid">
+      <div class="color-card" *ngFor="let color of colors">
+        <div class="color-swatch" [style.background-color]="color.bg"></div>
+        <div class="color-details">
+          <div class="color-title-row">
+            <h4>{{ color.name }}</h4>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#B5674A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <span class="hex-value">{{ color.hex }}</span>
+          <div class="color-category">
+            <span class="tag">{{ color.category }}</span>
+          </div>
+          <button class="btn-try">Try This Color</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="view-all-btn">
+      <button class="btn-outline">View All Colors</button>
+    </div>
+  </section>
+
+  <!-- Compare Section (Slider) -->
+  <section class="compare-section">
+    <div class="section-header">
+      <span class="section-tag">COMPARE</span>
+      <h2>See Your Room in a New Color</h2>
+      <p>Drag the handle to reveal the painted wall. This is exactly what the visualizer produces.</p>
+    </div>
+
+    <div class="slider-container">
+      <div class="slider-wrapper">
+        <div class="label-pill before-label">BEFORE</div>
+        <div class="label-pill after-label">AFTER</div>
+        
+        <!-- Base Image (Before) -->
+        <img src="assets/images/hero-room.png" alt="Before" class="base-image">
+        
+        <!-- Overlay Image (After) via clip-path -->
+        <div class="after-image-container" [style.clip-path]="'inset(0 0 0 ' + sliderPosition + '%)'">
+          <img src="assets/images/hero-room.png" alt="After" class="after-image">
+          <div class="blue-wall-overlay"></div>
+        </div>
+
+        <!-- Slider Handle -->
+        <input type="range" min="0" max="100" [value]="sliderPosition" (input)="onSliderInput($event)" class="slider-input">
+        <div class="slider-line" [style.left.%]="sliderPosition">
+          <div class="slider-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M4 20L21 3"/><path d="M21 16v5h-5"/><path d="M9 21H4v-5"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="slider-colors-pills">
+        <div class="pill active">
+          <div class="dot" style="background-color: #8FA9B8"></div> Ocean Breeze
+        </div>
+        <div class="pill">
+          <div class="dot" style="background-color: #879C76"></div> Sage Green
+        </div>
+        <div class="pill">
+          <div class="dot" style="background-color: #D9C7AE"></div> Warm Beige
+        </div>
+        <div class="pill">
+          <div class="dot" style="background-color: #BFBFBA"></div> Soft Grey
+        </div>
+        <div class="pill">
+          <div class="dot" style="background-color: #B5674A"></div> Terracotta
+        </div>
+        <div class="pill">
+          <div class="dot" style="background-color: #7E93A8"></div> Dusty Blue
+        </div>
+        <div class="pill">
+          <div class="dot" style="background-color: #F2EADF"></div> Ivory
+        </div>
+        <div class="pill">
+          <div class="dot" style="background-color: #3F5D4A"></div> Forest Green
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Why SmartPaint Section -->
+  <section class="why-smartpaint-section">
+    <div class="section-header">
+      <span class="section-tag">WHY SMARTPAINT</span>
+      <h2>Built around one honest question:<br>will this color work?</h2>
+    </div>
+
+    <div class="features-grid-4">
+      <div class="feature-box">
+        <div class="icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D37E63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </div>
+        <h3>Real Room Preview</h3>
+        <p>Preview colors directly on your room.</p>
+      </div>
+      <div class="feature-box">
+        <div class="icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D37E63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3>Easy Wall Selection</h3>
+        <p>Select walls manually using simple tools.</p>
+      </div>
+      <div class="feature-box">
+        <div class="icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D37E63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Try Multiple Colors</h3>
+        <p>Experiment with different shades before deciding.</p>
+      </div>
+      <div class="feature-box">
+        <div class="icon-wrapper">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D37E63" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Save Your Designs</h3>
+        <p>Keep your favorite room designs for later.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap Section -->
+  <section class="roadmap-section">
+    <div class="section-header">
+      <span class="section-tag">ROADMAP</span>
+      <h2>What's Coming Next</h2>
+      <p>Planned for the next phases of the platform.</p>
+    </div>
+
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <h3>AI Wall Detection</h3>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+      <div class="roadmap-card">
+        <h3>3D Room Preview</h3>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+      <div class="roadmap-card">
+        <h3>Day/Night Lighting Simulation</h3>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+      <div class="roadmap-card">
+        <h3>AR Camera Preview</h3>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+      <div class="roadmap-card">
+        <h3>Paint Brand Integration</h3>
+        <span class="coming-soon">Coming Soon</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-banner">
+      <h2>Try it with your own room<br>photo in under a minute</h2>
+      <div class="cta-actions">
+        <button class="btn-beige">Visualize My Room</button>
+        <button class="btn-outline-white">Create Free Account</button>
+      </div>
+    </div>
+    
+    <div class="disclaimer-box">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <p>Color previews are for visualization purposes only. Final paint appearance may vary depending on lighting, screen calibration, wall texture and application conditions.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo">
+          <div class="logo-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+          </div>
+          <span class="brand-name">SmartPaint</span>
+        </div>
+        <p class="brand-desc">Visualize before you paint. Upload your room, select a wall and preview real paint shades in seconds.</p>
+        <div class="social-icons">
+          <div class="social-circle"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div>
+          <div class="social-circle"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg></div>
+          <div class="social-circle"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></div>
+          <div class="social-circle"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></div>
+        </div>
+      </div>
+      <div class="footer-links">
+        <div class="link-group">
+          <h4>PRODUCT</h4>
+          <a href="#">Home</a>
+          <a href="#">How It Works</a>
+          <a href="#">Colors</a>
+          <a href="#">Projects</a>
+        </div>
+        <div class="link-group">
+          <h4>COMPANY</h4>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+          <a href="#">Get Started</a>
+          <a href="#">Admin Demo</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>Color previews are for visualization purposes only.</p>
+      <p>&copy; 2026 Smart Wall Paint Visualizer</p>
+    </div>
+  </footer>
+</div>
