@@ -14,6 +14,10 @@ import { AuthService } from '../../services/auth.service';
 export class RegisterComponent implements OnInit {
   isLoginMode = false;
   
+  showRegisterPassword = false;
+  showConfirmPassword = false;
+  showLoginPassword = false;
+  
   registerForm!: FormGroup;
   loginForm!: FormGroup;
 
@@ -49,8 +53,19 @@ export class RegisterComponent implements OnInit {
     this.isLoginMode = !this.isLoginMode;
     this.errorMessage = '';
     this.successMessage = '';
+    this.showRegisterPassword = false;
+    this.showConfirmPassword = false;
+    this.showLoginPassword = false;
     this.registerForm.reset();
     this.loginForm.reset();
+  }
+
+  useDemoAccount() {
+    this.loginForm.patchValue({
+      email: 'demo@smartpaint.com',
+      password: 'demo123'
+    });
+    this.onLoginSubmit();
   }
 
   onSubmit() {
