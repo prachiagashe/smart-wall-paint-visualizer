@@ -38,23 +38,36 @@
     </div>
 
     <div class="content-grid">
-      <!-- Left Column: Upload Zone -->
+      <!-- Left Column: Upload Zone / Preview -->
       <div class="upload-column">
-        <div class="upload-zone">
+        <!-- Default Upload Zone -->
+        <div class="upload-zone" *ngIf="!uploadedImageUrl">
           <div class="icon-circle">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="M12 12v9"/><path d="m8 16 4-4 4 4"/></svg>
           </div>
           <h2>Drag and drop your room photo</h2>
           <p class="upload-hint">Upload JPG or PNG - Maximum recommended size: 10 MB</p>
-          <button class="btn-primary btn-choose">Choose Image</button>
+          <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/jpeg, image/png" style="display: none;">
+          <button class="btn-primary btn-choose" (click)="triggerFileInput()">Choose Image</button>
 
           <div class="sample-rooms">
             <p>No photo handy? Try a sample room</p>
             <div class="thumbnails">
-              <div class="thumbnail" *ngFor="let img of sampleImages">
+              <div class="thumbnail" *ngFor="let img of sampleImages" (click)="selectSampleImage(img)">
                 <img [src]="img" alt="Sample Room">
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Image Preview Zone -->
+        <div class="preview-zone" *ngIf="uploadedImageUrl">
+          <div class="image-container">
+            <img [src]="uploadedImageUrl" alt="Uploaded Room" class="uploaded-image">
+          </div>
+          <div class="preview-actions">
+            <button class="btn-outline-primary" (click)="clearImage()">Upload Different Image</button>
+            <button class="btn-primary" (click)="goToEditor()">Continue to Color Selection</button>
           </div>
         </div>
       </div>

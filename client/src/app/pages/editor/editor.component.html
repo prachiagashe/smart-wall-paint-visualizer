@@ -1,0 +1,121 @@
+<div class="page-container">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      </div>
+      <div class="logo-text">
+        <span class="brand-name">SmartPaint</span>
+        <span class="brand-sub">SMART WALL PAINT VISUALIZER</span>
+      </div>
+    </div>
+
+    <nav class="main-nav">
+      <a routerLink="/">Home</a>
+      <a routerLink="/how-it-works">How It Works</a>
+      <a routerLink="/colors">Colors</a>
+      <a href="#">My Projects</a>
+    </nav>
+
+    <div class="header-actions">
+      <a routerLink="/register" class="login-link">Login</a>
+      <button class="btn-primary">Get Started</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="editor-main">
+    <div class="hero-section">
+      <div class="hero-content">
+        <span class="step-tag">STEP 2 OF 4</span>
+        <h1>Select Your Wall</h1>
+        <p>Select the wall area where you want to apply the paint.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn-outline-primary" routerLink="/upload">Change photo</button>
+        <button class="btn-primary btn-next" (click)="goToVisualizer()">Continue to Colors <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Left Column: Canvas -->
+      <div class="canvas-column">
+        <div class="canvas-container">
+          <img [src]="imageUrl" alt="Room Canvas">
+        </div>
+      </div>
+
+      <!-- Right Column: Sidebar Tools -->
+      <div class="sidebar-column">
+        
+        <!-- TOOLS Card -->
+        <div class="sidebar-card tools-card">
+          <div class="card-header">
+            <h4>TOOLS</h4>
+          </div>
+          
+          <div class="tools-grid">
+            <button class="tool-btn" [class.active]="activeTool === 'select'" (click)="setTool('select')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="M13 13l6 6"/></svg>
+              <span>Select</span>
+            </button>
+            <button class="tool-btn" [class.active]="activeTool === 'brush'" (click)="setTool('brush')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9.06 11.9 8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"/><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"/></svg>
+              <span>Brush</span>
+            </button>
+            <button class="tool-btn" [class.active]="activeTool === 'polygon'" (click)="setTool('polygon')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 22h20L12 2z"/></svg>
+              <span>Polygon</span>
+            </button>
+            <button class="tool-btn" [class.active]="activeTool === 'eraser'" (click)="setTool('eraser')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
+              <span>Eraser</span>
+            </button>
+          </div>
+
+          <div class="brush-size-control">
+            <div class="label-row">
+              <label>Brush size</label>
+              <span>{{ brushSize }}px</span>
+            </div>
+            <input type="range" min="10" max="200" [(ngModel)]="brushSize" class="slider-input">
+          </div>
+        </div>
+
+        <!-- HISTORY Card -->
+        <div class="sidebar-card history-card">
+          <div class="card-header">
+            <h4>HISTORY</h4>
+          </div>
+          
+          <div class="history-actions">
+            <button class="btn-history">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+              Undo
+            </button>
+            <button class="btn-history">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+              Redo
+            </button>
+            <button class="btn-history text-red">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+              Clear
+            </button>
+          </div>
+
+          <button class="btn-suggest">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>
+            Suggest wall area
+          </button>
+        </div>
+
+        <!-- Status Card -->
+        <div class="sidebar-card status-card">
+          <h4>Selection status</h4>
+          <p>Wall area marked &mdash; you're ready for colors.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

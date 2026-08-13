@@ -255,6 +255,45 @@ $white: #FFFFFF;
       }
     }
   }
+
+  .preview-zone {
+    background-color: $white;
+    border: 1px solid $border-color;
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+
+    .image-container {
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.02);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+
+      img {
+        max-width: 100%;
+        max-height: 600px;
+        object-fit: contain;
+        display: block;
+      }
+    }
+
+    .preview-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+
+      .btn-primary {
+        flex-grow: 1;
+      }
+    }
+  }
 }
 
 /* Right Column */

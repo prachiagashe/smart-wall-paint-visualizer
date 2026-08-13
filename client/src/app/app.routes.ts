@@ -4,6 +4,8 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { HowItWorksComponent } from './pages/how-it-works/how-it-works.component';
 import { ColorsComponent } from './pages/colors/colors.component';
 import { UploadComponent } from './pages/upload/upload.component';
+import { EditorComponent } from './pages/editor/editor.component';
+import { VisualizerComponent } from './pages/visualizer/visualizer.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent, pathMatch: 'full' },
@@ -11,4 +13,6 @@ export const routes: Routes = [
   { path: 'how-it-works', component: HowItWorksComponent },
   { path: 'colors', component: ColorsComponent },
   { path: 'upload', component: UploadComponent },
+  { path: 'editor', component: EditorComponent },
+  { path: 'visualizer', component: VisualizerComponent },
 ];

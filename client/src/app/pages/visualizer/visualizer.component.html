@@ -1,0 +1,172 @@
+<div class="page-container">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg>
+      </div>
+      <div class="logo-text">
+        <span class="brand-name">SmartPaint</span>
+        <span class="brand-sub">SMART WALL PAINT VISUALIZER</span>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a routerLink="/">Home</a>
+      <a routerLink="/how-it-works">How It Works</a>
+      <a routerLink="/colors">Colors</a>
+      <a href="#">My Projects</a>
+    </nav>
+    <div class="header-actions">
+      <a routerLink="/register" class="login-link">Login</a>
+      <button class="btn-primary">Get Started</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="visualizer-main">
+    <div class="content-grid">
+      
+      <!-- Left Column: Canvas Preview -->
+      <div class="preview-column">
+        
+        <div class="top-bar">
+          <div class="view-toggles">
+            <button class="toggle-btn" [class.active]="!isBeforeAfterMode" (click)="toggleBeforeAfter()">Live Preview</button>
+            <button class="toggle-btn" [class.active]="isBeforeAfterMode" (click)="toggleBeforeAfter()">Before / After</button>
+          </div>
+        </div>
+
+        <!-- The Canvas Masking Area -->
+        <div class="canvas-container" [class.split-view]="isBeforeAfterMode">
+          
+          <!-- Original Image (Always sits at bottom) -->
+          <img [src]="imageUrl" alt="Original Room" class="base-image" [style.filter]="!showOriginal ? 'brightness(' + (brightness / 100) + ')' : 'none'">
+          
+          <!-- Colored Overlay (clipped by polygon) -->
+          <div class="color-overlay-wrapper" 
+               *ngIf="!showOriginal"
+               [style.clip-path]="polygonClipPath">
+               
+               <!-- The actual color block -->
+               <div class="color-layer" 
+                    [style.background-color]="selectedColor?.hex"
+                    [style.opacity]="opacity / 100"
+                    [style.mix-blend-mode]="getBlendMode()"
+                    [class.pattern-overlay]="designType === 'pattern'"
+                    [class.dual-overlay]="designType === 'dual'">
+               </div>
+          </div>
+
+          <!-- Split Divider for Before/After Mode -->
+          <div class="split-divider" *ngIf="isBeforeAfterMode">
+            <div class="divider-line"></div>
+            <div class="divider-handle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-actions">
+          <button class="btn-outline-primary" (click)="toggleOriginal()">
+            {{ showOriginal ? 'Show Painted Version' : 'Show Original' }}
+          </button>
+          <div class="right-actions">
+            <button class="btn-outline-primary" (click)="downloadImage()">Download</button>
+            <button class="btn-primary" (click)="saveDesign()">Save Design</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Controls Sidebar -->
+      <div class="sidebar-column">
+        
+        <!-- Color Palette -->
+        <div class="sidebar-card palette-card">
+          <div class="card-header">
+            <h4>COLOR PALETTE</h4>
+            <span class="subtitle">All Colors</span>
+          </div>
+
+          <div class="search-bar">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="Search colors..." [(ngModel)]="searchQuery">
+          </div>
+
+          <div class="categories">
+            <button class="cat-pill" *ngFor="let cat of categories" [class.active]="activeCategory === cat" (click)="setCategory(cat)">
+              {{ cat }}
+            </button>
+          </div>
+
+          <div class="color-grid">
+            <div class="color-swatch-wrapper" *ngFor="let color of filteredColors" 
+                 [class.selected]="selectedColor?.id === color.id"
+                 (click)="selectColor(color)">
+              <div class="color-swatch" [style.background-color]="color.hex"></div>
+            </div>
+          </div>
+
+          <div class="selected-color-info" *ngIf="selectedColor">
+            <div class="info-swatch" [style.background-color]="selectedColor.hex"></div>
+            <div class="info-text">
+              <h5>{{ selectedColor.name }}</h5>
+              <span>{{ selectedColor.hex }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opacity & Brightness -->
+        <div class="sidebar-card sliders-card">
+          <div class="slider-group">
+            <div class="label-row">
+              <h4>OPACITY</h4>
+              <span>{{ opacity }}%</span>
+            </div>
+            <input type="range" min="0" max="100" [(ngModel)]="opacity" class="range-slider">
+          </div>
+
+          <div class="slider-group">
+            <div class="label-row">
+              <h4>BRIGHTNESS</h4>
+              <span>{{ brightness }}%</span>
+            </div>
+            <input type="range" min="50" max="150" [(ngModel)]="brightness" class="range-slider">
+          </div>
+        </div>
+
+        <!-- Finish -->
+        <div class="sidebar-card finish-card">
+          <h4>FINISH</h4>
+          <div class="radio-group">
+            <label class="radio-option">
+              <input type="radio" name="finish" value="matte" [(ngModel)]="finish">
+              <span class="custom-radio"></span>
+              Matte
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="finish" value="satin" [(ngModel)]="finish">
+              <span class="custom-radio"></span>
+              Satin
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="finish" value="glossy" [(ngModel)]="finish">
+              <span class="custom-radio"></span>
+              Glossy
+            </label>
+          </div>
+        </div>
+
+        <!-- Design -->
+        <div class="sidebar-card design-card">
+          <h4>DESIGN</h4>
+          <div class="segmented-control">
+            <button [class.active]="designType === 'solid'" (click)="designType = 'solid'">Solid</button>
+            <button [class.active]="designType === 'dual'" (click)="designType = 'dual'">Dual</button>
+            <button [class.active]="designType === 'pattern'" (click)="designType = 'pattern'">Pattern</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
