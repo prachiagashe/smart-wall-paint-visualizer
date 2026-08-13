@@ -618,7 +618,10 @@ h1, h2, h3, h4, .brand-name {
     &.active, &:hover {
       background: #F0F4EC;
       border-color: $primary-green;
-    
+    }
+  }
+}
+
 /* -------------------------------------
  * Why SmartPaint Section
  * ------------------------------------- */
@@ -925,5 +928,137 @@ h1, h2, h3, h4, .brand-name {
   }
 }
 
+/* -------------------------------------
+ * Responsive & Mobile Styles
+ * ------------------------------------- */
+@media (max-width: 1024px) {
+  .hero-section {
+    padding: 3rem 2rem;
+  }
+  .steps-grid, .colors-grid, .features-grid-4, .roadmap-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .footer-links {
+    gap: 3rem;
   }
 }
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+
+    .main-nav {
+      order: 3;
+      width: 100%;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+  }
+
+  .hero-section {
+    flex-direction: column;
+    padding: 2rem 1rem;
+    text-align: center;
+
+    .hero-content {
+      margin-bottom: 3rem;
+      max-width: 100%;
+
+      .hero-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      .stats-row {
+        justify-content: center;
+      }
+    }
+  }
+
+  .how-it-works-section,
+  .color-library-section,
+  .compare-section,
+  .why-smartpaint-section,
+  .roadmap-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .steps-grid, 
+  .features-grid-4, 
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .colors-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cta-section {
+    padding: 2rem 1rem;
+
+    .cta-banner {
+      padding: 3rem 1.5rem;
+      
+      h2 {
+        font-size: 2.5rem;
+      }
+
+      .cta-actions {
+        flex-direction: column;
+      }
+    }
+    
+    .disclaimer-box {
+      margin-top: 1rem;
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  .app-footer {
+    padding: 3rem 1.5rem;
+    
+    .footer-top {
+      flex-direction: column;
+      gap: 3rem;
+      
+      .footer-brand {
+        max-width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
+    .footer-links {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 2rem;
+    }
+
+    .footer-bottom {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section .hero-content .main-heading {
+    font-size: 3rem;
+  }
+  .colors-grid {
+    grid-template-columns: 1fr;
+  }
+  .slider-wrapper {
+    aspect-ratio: 4/3;
+  }
+}
+
