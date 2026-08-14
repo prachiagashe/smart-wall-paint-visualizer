@@ -14,6 +14,7 @@ export class UploadComponent {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   uploadedImageUrl: string | ArrayBuffer | null = null;
+  showValidation = false;
 
   // Using the available hero-room.png as placeholder for the sample room thumbnails
   sampleImages = [
@@ -34,13 +35,17 @@ export class UploadComponent {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const reader = new FileReader();
-      reader.onload = e => this.uploadedImageUrl = reader.result;
+      reader.onload = e => {
+        this.uploadedImageUrl = reader.result;
+        this.showValidation = false;
+      };
       reader.readAsDataURL(file);
     }
   }
 
   selectSampleImage(imgUrl: string) {
     this.uploadedImageUrl = imgUrl;
+    this.showValidation = false;
   }
 
   clearImage() {
@@ -52,8 +57,11 @@ export class UploadComponent {
 
   goToEditor() {
     if (this.uploadedImageUrl) {
+      this.showValidation = false;
       this.imageService.setImage(this.uploadedImageUrl);
       this.router.navigate(['/editor']);
+    } else {
+      this.showValidation = true;
     }
   }
 }

@@ -67,7 +67,6 @@
           </div>
           <div class="preview-actions">
             <button class="btn-outline-primary" (click)="clearImage()">Upload Different Image</button>
-            <button class="btn-primary" (click)="goToEditor()">Continue to Color Selection</button>
           </div>
         </div>
       </div>
@@ -104,6 +103,14 @@
         <!-- Privacy Banner -->
         <div class="privacy-banner">
           <p>Your photo never leaves your device in this demo &mdash; it is stored only in your browser.</p>
+        </div>
+
+        <!-- Action Card -->
+        <div class="info-card action-card" style="margin-top: 2rem; background: transparent; border: none; padding: 0;">
+          <button class="btn-primary" (click)="goToEditor()" style="width: 100%; padding: 1rem; font-size: 1.05rem;">Continue to Color Selection</button>
+          <div *ngIf="showValidation && !uploadedImageUrl" style="color: #d32f2f; margin-top: 0.75rem; font-size: 0.9rem; font-weight: 500; background: #ffebee; padding: 0.5rem 1rem; border-radius: 4px; text-align: center;">
+            Please upload a room image first.
+          </div>
         </div>
       </div>
     </div>
