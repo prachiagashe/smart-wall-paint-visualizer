@@ -1,15 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-
-interface Color {
-  name: string;
-  hex: string;
-  category: string;
-  finishes: string[];
-  description: string;
-}
+import { ImageService, AppColor } from '../../services/image.service';
 
 @Component({
   selector: 'app-colors',
@@ -18,110 +11,35 @@ interface Color {
   templateUrl: './colors.component.html',
   styleUrls: ['./colors.component.scss']
 })
-export class ColorsComponent {
+export class ColorsComponent implements OnInit {
   searchQuery: string = '';
   activeFilter: string = 'All';
+  filters = ['All', 'Warm', 'Cool', 'Neutral', 'Accent'];
+  
+  allColors: AppColor[] = [];
+  favoriteIds: Set<number> = new Set<number>();
+  
+  // Track selected finish per color ID
+  selectedFinishes: Record<number, string> = {};
 
-  filters = ['All', 'Warm', 'Cool', 'Neutral', 'Accent', 'Living Room', 'Bedroom', 'Modern'];
+  constructor(private imageService: ImageService, private router: Router) {}
 
-  allColors: Color[] = [
-    {
-      name: 'Ocean Breeze',
-      hex: '#8FA9B8',
-      category: 'Cool',
-      finishes: ['Matte', 'Satin', 'Glossy'],
-      description: 'A calm coastal blue-grey that opens up compact rooms.'
-    },
-    {
-      name: 'Sage Green',
-      hex: '#879C76',
-      category: 'Cool',
-      finishes: ['Matte', 'Satin'],
-      description: 'Muted botanical green — our most saved accent wall shade.'
-    },
-    {
-      name: 'Warm Beige',
-      hex: '#D9C7AE',
-      category: 'Warm',
-      finishes: ['Matte', 'Satin'],
-      description: 'A soft sand neutral that flatters warm evening lighting.'
-    },
-    {
-      name: 'Soft Grey',
-      hex: '#BFBFBA',
-      category: 'Neutral',
-      finishes: ['Matte', 'Satin', 'Glossy'],
-      description: 'Balanced grey with a whisper of green for softer shadows.'
-    },
-    {
-      name: 'Terracotta',
-      hex: '#B5674A',
-      category: 'Accent',
-      finishes: ['Matte', 'Satin'],
-      description: 'Earthy baked-clay tone for a confident feature wall.'
-    },
-    {
-      name: 'Dusty Blue',
-      hex: '#7E93A8',
-      category: 'Cool',
-      finishes: ['Matte', 'Satin'],
-      description: 'Quiet denim blue that pairs beautifully with oak furniture.'
-    },
-    {
-      name: 'Ivory',
-      hex: '#F2EADF',
-      category: 'Neutral',
-      finishes: ['Matte', 'Satin', 'Glossy'],
-      description: 'Creamy off-white base shade for bright, airy interiors.'
-    },
-    {
-      name: 'Forest Green',
-      hex: '#3F5D4A',
-      category: 'Accent',
-      finishes: ['Matte', 'Satin'],
-      description: 'Deep, library-inspired green for dramatic accent walls.'
-    },
-    {
-      name: 'Clay Rose',
-      hex: '#C79C93',
-      category: 'Warm',
-      finishes: ['Matte', 'Satin'],
-      description: 'Dusty pink with a clay undertone — warm without being sweet.'
-    },
-    {
-      name: 'Charcoal Slate',
-      hex: '#4A4E52',
-      category: 'Neutral',
-      finishes: ['Matte', 'Satin', 'Glossy'],
-      description: 'Architectural dark grey for media walls and studies.'
-    },
-    {
-      name: 'Mustard Linen',
-      hex: '#C99A48',
-      category: 'Accent',
-      finishes: ['Matte', 'Satin'],
-      description: 'Golden ochre that turns hallway walls into a highlight.'
-    },
-    {
-      name: 'Morning Mist',
-      hex: '#DCE3E1',
-      category: 'Cool',
-      finishes: ['Matte', 'Satin', 'Glossy'],
-      description: 'Pale mineral tint that keeps small rooms feeling open.'
-    }
-  ];
+  ngOnInit() {
+    this.allColors = this.imageService.getColors();
+    
+    // Set default finishes
+    this.allColors.forEach(c => {
+      this.selectedFinishes[c.id] = c.finishes[0];
+    });
 
-  get filteredColors(): Color[] {
+    this.loadFavorites();
+  }
+
+  get filteredColors(): AppColor[] {
     let filtered = this.allColors;
 
     if (this.activeFilter !== 'All') {
-      // Filter by category or if it's a room tag, we just fake it by showing a subset
-      if (['Warm', 'Cool', 'Neutral', 'Accent'].includes(this.activeFilter)) {
-        filtered = filtered.filter(c => c.category === this.activeFilter);
-      } else {
-        // Fake subset for "Living Room", "Bedroom", "Modern"
-        filtered = filtered.slice(0, 5); 
-      }
+      filtered = filtered.filter(c => c.category === this.activeFilter);
     }
 
     if (this.searchQuery.trim()) {
@@ -129,7 +47,8 @@ export class ColorsComponent {
       filtered = filtered.filter(c => 
         c.name.toLowerCase().includes(query) || 
         c.hex.toLowerCase().includes(query) ||
-        c.category.toLowerCase().includes(query)
+        c.category.toLowerCase().includes(query) ||
+        c.description.toLowerCase().includes(query)
       );
     }
 
@@ -138,5 +57,52 @@ export class ColorsComponent {
 
   setFilter(filter: string) {
     this.activeFilter = filter;
+  }
+
+  toggleFavorite(color: AppColor) {
+    if (this.favoriteIds.has(color.id)) {
+      this.favoriteIds.delete(color.id);
+    } else {
+      this.favoriteIds.add(color.id);
+    }
+    this.saveFavorites();
+  }
+
+  isFavorite(id: number): boolean {
+    return this.favoriteIds.has(id);
+  }
+
+  private loadFavorites() {
+    const saved = localStorage.getItem('smartpaint_favorites');
+    if (saved) {
+      try {
+        const ids = JSON.parse(saved) as number[];
+        this.favoriteIds = new Set<number>(ids);
+      } catch (e) {
+        console.error('Failed to load favorites', e);
+      }
+    }
+  }
+
+  private saveFavorites() {
+    localStorage.setItem('smartpaint_favorites', JSON.stringify(Array.from(this.favoriteIds)));
+  }
+
+  selectFinish(colorId: number, finish: string) {
+    this.selectedFinishes[colorId] = finish;
+  }
+
+  tryColor(color: AppColor) {
+    const selectedFinish = this.selectedFinishes[color.id] || color.finishes[0];
+    // Map 'Matte', 'Satin', 'Glossy' to 'matte', 'satin', 'glossy' for Visualizer
+    const mappedFinish = selectedFinish.toLowerCase();
+    
+    this.router.navigate(['/visualizer'], {
+      state: {
+        color: color,
+        finish: mappedFinish,
+        cameFromColorsPage: true
+      }
+    });
   }
 }

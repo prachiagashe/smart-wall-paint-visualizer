@@ -24,13 +24,27 @@ export class VisualizerComponent implements OnInit {
   designType: 'solid' | 'dual' | 'pattern' = 'solid';
   showOriginal: boolean = false;
   isBeforeAfterMode: boolean = false;
+  cameFromColorsPage: boolean = false;
   
   // Search and filter
   searchQuery: string = '';
   activeCategory: string = 'All';
   categories = ['All', 'Warm', 'Cool', 'Neutral', 'Accent'];
 
-  constructor(private imageService: ImageService, private router: Router) {}
+  constructor(private imageService: ImageService, private router: Router) {
+    const nav = this.router.getCurrentNavigation();
+    if (nav?.extras.state) {
+      if (nav.extras.state['cameFromColorsPage']) {
+        this.cameFromColorsPage = true;
+      }
+      if (nav.extras.state['color']) {
+        this.selectedColor = nav.extras.state['color'];
+      }
+      if (nav.extras.state['finish']) {
+        this.finish = nav.extras.state['finish'];
+      }
+    }
+  }
 
   ngOnInit() {
     const savedImg = this.imageService.getImage();
@@ -41,9 +55,9 @@ export class VisualizerComponent implements OnInit {
     this.wallPolygon = this.imageService.getPolygon();
     this.colors = this.imageService.getColors();
     
-    // Select default color
-    if (this.colors.length > 0) {
-      this.selectedColor = this.colors[0]; // Sage Green
+    // Select default color if none passed via routing state
+    if (!this.selectedColor && this.colors.length > 0) {
+      this.selectedColor = this.colors[0]; // Ocean Breeze/Sage Green
     }
   }
 

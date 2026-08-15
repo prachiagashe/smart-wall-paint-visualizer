@@ -184,130 +184,61 @@ $white: #FFFFFF;
  * Colors Main
  * ------------------------------------- */
 .colors-main {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 4rem 2rem;
   width: 100%;
 }
 
-.title-section-wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 3rem;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+.header-content-centered {
+  text-align: center;
+  margin-bottom: 2rem;
 
-  .title-section {
-    margin-bottom: 0;
-    .guide-tag {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 2px;
-      color: $text-light;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-      display: block;
-    }
-    h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 3rem;
-      font-weight: 400;
-      margin: 0 0 1rem 0;
-      color: $text-dark;
-    }
-    p {
-      font-size: 1.1rem;
-      color: $text-light;
-      margin: 0;
-    }
+  .guide-tag {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: $text-light;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: block;
   }
-
-  .title-action {
-    .upload-room-btn {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.8rem 1.75rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      background-color: $primary-green;
-      color: white;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 6px rgba(63, 96, 79, 0.2);
-
-      svg {
-        width: 20px;
-        height: 20px;
-      }
-
-      &:hover {
-        background-color: $dark-green;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 12px rgba(63, 96, 79, 0.3);
-      }
-    }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin: 0 auto;
+    color: $text-dark;
+    max-width: 800px;
+    line-height: 1.3;
   }
 }
 
-.filters-bar {
+.search-container-centered {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid $border-color;
-  padding-bottom: 2rem;
-  margin-bottom: 3rem;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
 
-  .pills-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-
-    .filter-pill {
-      background: white;
-      border: 1px solid $border-color;
-      padding: 0.6rem 1.25rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      color: $text-light;
-      cursor: pointer;
-      transition: all 0.2s;
-
-      &:hover {
-        border-color: #d0c8be;
-      }
-      &.active {
-        background-color: $light-green;
-        border-color: $light-green;
-        color: $primary-green;
-        font-weight: 500;
-      }
-    }
-  }
-
-  .search-container {
+  .search-box {
     display: flex;
     align-items: center;
     background: white;
     border: 1px solid $border-color;
-    border-radius: 20px;
-    padding: 0.5rem 1rem;
-    min-width: 250px;
+    border-radius: 24px;
+    padding: 0.75rem 1.25rem;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 
     svg {
       color: $text-light;
-      margin-right: 0.5rem;
+      margin-right: 0.75rem;
     }
     input {
       border: none;
       outline: none;
       width: 100%;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: $text-dark;
       &::placeholder {
         color: #A0A0A0;
@@ -316,9 +247,53 @@ $white: #FFFFFF;
   }
 }
 
+.filters-centered {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4rem;
+
+  .pills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+
+    .filter-pill {
+      background: white;
+      border: 1px solid $border-color;
+      padding: 0.6rem 1.5rem;
+      border-radius: 24px;
+      font-size: 0.95rem;
+      color: $text-light;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+
+      &:hover {
+        border-color: #c4beb4;
+      }
+      &.active {
+        background-color: $light-green;
+        border-color: $primary-green;
+        color: $primary-green;
+      }
+    }
+  }
+}
+
+.no-results {
+  text-align: center;
+  padding: 4rem 0;
+  p {
+    font-size: 1.1rem;
+    color: $text-light;
+    margin-bottom: 1.5rem;
+  }
+}
+
 .colors-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
 }
 
@@ -326,24 +301,25 @@ $white: #FFFFFF;
   background: white;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.04);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.06);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
   }
 
   .color-swatch {
-    height: 160px;
+    height: 120px;
     width: 100%;
+    border-radius: 16px 16px 0 0;
   }
 
   .color-info {
-    padding: 1.5rem;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -356,7 +332,7 @@ $white: #FFFFFF;
 
       h3 {
         font-family: 'DM Serif Display', serif;
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         font-weight: 400;
         margin: 0;
         color: $text-dark;
@@ -365,26 +341,30 @@ $white: #FFFFFF;
       .btn-heart {
         background: none;
         border: none;
-        color: $text-light;
+        color: #D1D5DB; /* light gray default */
         cursor: pointer;
         padding: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: color 0.2s;
+        transition: all 0.2s;
 
         &:hover {
-          color: #B96545; /* Terracotta like heart color */
+          color: #EF4444; /* red on hover */
+          transform: scale(1.1);
+        }
+        &.favorited {
+          color: #EF4444; /* solid red when favorited */
         }
       }
     }
 
     .hex-code {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       color: $text-light;
       font-weight: 600;
-      letter-spacing: 1px;
-      margin-bottom: 1.25rem;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
       display: block;
       text-transform: uppercase;
     }
@@ -393,33 +373,47 @@ $white: #FFFFFF;
       display: flex;
       flex-wrap: wrap;
       gap: 0.5rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1rem;
+      align-items: center;
 
       .tag {
-        font-size: 0.7rem;
-        padding: 0.25rem 0.6rem;
+        font-size: 0.65rem;
+        padding: 0.35rem 0.6rem;
         border-radius: 12px;
         font-weight: 500;
-      }
-
-      .finish-tag {
-        border: 1px solid $border-color;
-        color: $text-light;
-        background: white;
+        letter-spacing: 0.5px;
       }
 
       /* Specific category tag colors based on design */
-      .category-tag.cool { background: #EAEFE9; color: #5B7261; }
-      .category-tag.warm { background: #F3EAE4; color: #8F6652; }
-      .category-tag.neutral { background: #EFEFEF; color: #666666; }
-      .category-tag.accent { background: #EFEBE5; color: #8F7652; }
+      .category-tag.cool { background: #F3F4F6; color: #4B5563; }
+      .category-tag.warm { background: #FEF3C7; color: #92400E; }
+      .category-tag.neutral { background: #F3F4F6; color: #6B7280; }
+      .category-tag.accent { background: #FFEDD5; color: #9A3412; }
+
+      .finish-pill {
+        border: 1px solid $border-color;
+        color: $text-light;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          border-color: $text-light;
+        }
+
+        &.active {
+          background: $text-dark;
+          color: white;
+          border-color: $text-dark;
+        }
+      }
     }
 
     .description {
       font-size: 0.85rem;
       color: $text-light;
-      line-height: 1.6;
-      margin: 0 0 1.5rem 0;
+      line-height: 1.5;
+      margin: 0 0 1rem 0;
       flex-grow: 1; /* Pushes the button to the bottom */
     }
 
@@ -428,17 +422,16 @@ $white: #FFFFFF;
       background: white;
       border: 1px solid $border-color;
       color: $text-dark;
-      padding: 0.6rem;
-      border-radius: 8px;
+      padding: 0.7rem;
+      border-radius: 12px;
       font-size: 0.85rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s;
       
       &:hover {
-        border-color: $primary-green;
-        color: $primary-green;
-        background: $light-green;
+        border-color: $text-dark;
+        background: #fafafa;
       }
     }
   }
@@ -447,29 +440,18 @@ $white: #FFFFFF;
 /* -------------------------------------
  * Responsive
  * ------------------------------------- */
-@media (max-width: 768px) {
-  .app-header {
-    padding: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    .main-nav {
-      width: 100%;
-      order: 3;
-      justify-content: center;
-      margin-top: 0.5rem;
-    }
-  }
-  
-  .filters-bar {
-    flex-direction: column;
-    align-items: stretch;
-    .search-container {
-      width: 100%;
-    }
-  }
-
+@media (max-width: 1024px) {
   .colors-grid {
-    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 }
+
+@media (max-width: 640px) {
+  .colors-grid {
+    grid-template-columns: 1fr;
+  }
+  .header-content-centered h1 {
+    font-size: 2rem;
+  }
+}
+
