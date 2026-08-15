@@ -1,0 +1,59 @@
+$primary-green: #3F604F;
+$dark-green: #31543F;
+$light-green: #E8F0EA;
+$bg-primary: #FDFBF7;
+$text-dark: #1F2421;
+$text-light: #6B6B6B;
+$border-color: #EAE6DF;
+$white: #FFFFFF;
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 4rem;
+  background-color: $white;
+  border-bottom: 1px solid $border-color;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  .logo-icon {
+    width: 36px; height: 36px; background-color: $primary-green; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; color: white;
+  }
+  .logo-text {
+    display: flex; flex-direction: column;
+    .brand-name { font-size: 1.25rem; font-weight: 600; color: $text-dark; line-height: 1; }
+    .brand-sub { font-size: 0.65rem; letter-spacing: 1px; color: $text-light; text-transform: uppercase; margin-top: 2px; }
+  }
+}
+.main-nav {
+  display: flex; gap: 2.5rem;
+  a { 
+    text-decoration: none; color: $text-light; font-size: 0.95rem; font-weight: 500; transition: color 0.2s; 
+    &:hover, &.active { color: $text-dark; font-weight: 600; } 
+  }
+}
+.header-actions {
+  display: flex; align-items: center; gap: 1.5rem;
+  .login-link { text-decoration: none; color: $text-dark; font-weight: 500; font-size: 0.95rem; }
+}
+.btn-primary {
+  background-color: $primary-green; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 500; font-size: 0.95rem; cursor: pointer; transition: background-color 0.2s;
+  &:hover { background-color: $dark-green; }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    .main-nav { order: 3; width: 100%; justify-content: center; flex-wrap: wrap; gap: 1.5rem; }
+  }
+}
