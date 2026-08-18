@@ -4,6 +4,7 @@ const cors = require("cors");
 const connectDB = require("./db");
 const authRoutes = require("./routes/auth.routes");
 const colorRoutes = require("./routes/color.routes");
+const favoriteRoutes = require("./routes/favorite.routes");
 
 const path = require("path");
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -20,6 +21,7 @@ connectDB();
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/colors", colorRoutes);
+app.use("/api/favorites", favoriteRoutes);
 
 // Test route
 app.get("/", (req, res) => {

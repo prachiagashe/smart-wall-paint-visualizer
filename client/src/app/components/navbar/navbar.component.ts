@@ -19,7 +19,19 @@ export class NavbarComponent {
   cartCount: number = 0;
   isScrolled: boolean = false;
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(public authService: AuthService, private router: Router) {
+    // Listen to router events to close mobile menu on navigation
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.isMobileMenuOpen = false;
+      }
+    });
+  }
+
+  // Auth Gating Methods
+  requireLogin(fallbackRoute: string) {
+    this.authService.requireLogin(undefined, fallbackRoute);
+  }
 
   @HostListener('window:scroll', [])
   onWindowScroll() {

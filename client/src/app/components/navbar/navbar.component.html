@@ -57,8 +57,14 @@
         <div class="popover-menu" *ngIf="isProfileMenuOpen" (click)="$event.stopPropagation()">
           <ng-container *ngIf="authService.isLoggedIn(); else loggedOutProfile">
             <a routerLink="/profile" (click)="isProfileMenuOpen = false">My Profile</a>
-            <a routerLink="/dashboard" (click)="isProfileMenuOpen = false">My Projects</a>
-            <a routerLink="/colors" (click)="isProfileMenuOpen = false">Favorites</a>
+            <div class="popover-item" (click)="requireLogin('/my-projects')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              My Projects
+            </div>
+            <div class="popover-item" (click)="requireLogin('/colors?saved=true')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              Saved Colours
+            </div>
             <button class="btn-text" (click)="logout()">Logout</button>
           </ng-container>
           <ng-template #loggedOutProfile>
@@ -67,12 +73,6 @@
           </ng-template>
         </div>
       </div>
-
-      <a routerLink="/colors" class="icon-link" title="Favorites">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
-      </a>
 
       <!-- Cart Popover -->
       <div class="popover-wrapper">
@@ -105,8 +105,8 @@
     <nav class="main-nav">
       <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
       <a routerLink="/how-it-works" routerLinkActive="active">How It Works</a>
-      <a routerLink="/colors" routerLinkActive="active">Colors</a>
-      <a routerLink="/dashboard" routerLinkActive="active">My Projects</a>
+      <a routerLink="/colors" routerLinkActive="active">Colours</a>
+      <a (click)="requireLogin('/my-projects')">My Projects</a>
       <a routerLink="/visualizer" routerLinkActive="active">Visualizer</a>
       <a *ngIf="authService.isAdmin()" routerLink="/admin" routerLinkActive="active">Admin</a>
     </nav>

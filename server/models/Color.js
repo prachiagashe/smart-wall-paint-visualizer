@@ -5,7 +5,9 @@ const colorSchema = new mongoose.Schema({
   hex: { type: String, required: true },
   rgb: { type: String },
   brand: { type: String, default: 'SmartPaint' },
-  category: { type: String, required: true },
+  category: { type: String, required: true }, // Legacy/UI grouping
+  family: { type: String, enum: ['Red', 'Orange', 'Yellow', 'Green', 'Blue', 'Purple', 'Pink', 'Brown', 'Grey', 'White'] },
+  tone: { type: String, enum: ['Light', 'Medium', 'Dark'] },
   temperature: { type: String, enum: ['Cool', 'Warm', 'Neutral', 'Accent'] },
   rooms: [{ type: String }],
   styles: [{ type: String }],

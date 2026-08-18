@@ -1,230 +1,301 @@
-<div class="page-container">
-
-  <!-- HERO SECTION -->
-  <header class="colors-hero">
-    <h1>Find a Color You'll Love</h1>
-    <p>Explore beautiful shades and see how they'll look in your actual room.</p>
-    
-    <div class="search-sort-bar">
-      <div class="search-box">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8" />
-          <line x1="21" y1="21" x2="16.65" y2="16.65" />
-        </svg>
-        <input type="text" placeholder="Search by color name or HEX code..." [(ngModel)]="searchQuery" />
-      </div>
-      <div class="sort-box">
-        <select [(ngModel)]="sortBy">
-          <option value="Popular">Popular</option>
-          <option value="A-Z">A–Z</option>
-          <option value="Newest">Newest</option>
-          <option value="Most Used">Most Used</option>
-        </select>
+<div class="color-catalogue-container">
+  <!-- Horizontal Category Navigation -->
+  <div class="category-nav-wrapper">
+    <div class="category-nav">
+      <div 
+        *ngFor="let cat of categories" 
+        class="category-item" 
+        [class.active]="activeCategory === cat"
+        (click)="setCategory(cat)">
+        <div class="cat-swatch" [ngClass]="cat.toLowerCase().replace(' ', '-')"></div>
+        <span class="cat-name">{{ cat }}</span>
       </div>
     </div>
-  </header>
+  </div>
 
-  <!-- POPULAR COLORS (Horizontal) -->
-  <section class="popular-section" *ngIf="popularColors.length > 0 && !searchQuery && activeCategory === 'All Colors' && filters.temperature.length === 0">
-    <div class="section-title">Popular This Week</div>
-    <div class="popular-flex">
-      <div class="popular-item" *ngFor="let color of popularColors" (click)="openModal(color)">
-        <div class="pop-swatch" [style.background-color]="color.hex"></div>
-        <span>{{ color.name }}</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- CATEGORY NAVIGATION -->
-  <nav class="category-nav">
-    <button class="cat-btn" *ngFor="let cat of categories" [class.active]="activeCategory === cat" (click)="setCategory(cat)">
-      {{ cat }}
-    </button>
-  </nav>
-
-  <main class="colors-main">
-    
-    <!-- MOBILE FILTER TOGGLE -->
-    <button class="mobile-filter-btn" (click)="isMobileFilterOpen = !isMobileFilterOpen">
-      Filters
-    </button>
-
-    <!-- SIDEBAR FILTERS -->
-    <aside class="filters-sidebar" [class.open]="isMobileFilterOpen">
-      <h3>FILTER BY</h3>
-      
-      <div class="filter-group">
-        <h4>COLOR TEMPERATURE</h4>
-        <label><input type="checkbox" [checked]="isFilterActive('temperature', 'Cool')" (change)="toggleFilter('temperature', 'Cool')"> Cool</label>
-        <label><input type="checkbox" [checked]="isFilterActive('temperature', 'Warm')" (change)="toggleFilter('temperature', 'Warm')"> Warm</label>
-        <label><input type="checkbox" [checked]="isFilterActive('temperature', 'Neutral')" (change)="toggleFilter('temperature', 'Neutral')"> Neutral</label>
+  <div class="catalogue-layout">
+    <!-- Advanced Filter Sidebar (Desktop) / Drawer (Mobile) -->
+    <div class="filter-sidebar" [class.mobile-open]="isMobileFilterOpen">
+      <div class="sidebar-header">
+        <h3>Filters</h3>
+        <button class="close-mobile-btn" (click)="isMobileFilterOpen = false">×</button>
       </div>
 
-      <div class="filter-group">
-        <h4>ROOM</h4>
-        <label><input type="checkbox" [checked]="isFilterActive('room', 'Living Room')" (change)="toggleFilter('room', 'Living Room')"> Living Room</label>
-        <label><input type="checkbox" [checked]="isFilterActive('room', 'Bedroom')" (change)="toggleFilter('room', 'Bedroom')"> Bedroom</label>
-        <label><input type="checkbox" [checked]="isFilterActive('room', 'Dining Room')" (change)="toggleFilter('room', 'Dining Room')"> Dining Room</label>
-        <label><input type="checkbox" [checked]="isFilterActive('room', 'Kitchen')" (change)="toggleFilter('room', 'Kitchen')"> Kitchen</label>
-        <label><input type="checkbox" [checked]="isFilterActive('room', 'Study')" (change)="toggleFilter('room', 'Study')"> Study</label>
-        <label><input type="checkbox" [checked]="isFilterActive('room', 'Bathroom')" (change)="toggleFilter('room', 'Bathroom')"> Bathroom</label>
-      </div>
-
-      <div class="filter-group">
-        <h4>STYLE</h4>
-        <label><input type="checkbox" [checked]="isFilterActive('style', 'Modern')" (change)="toggleFilter('style', 'Modern')"> Modern</label>
-        <label><input type="checkbox" [checked]="isFilterActive('style', 'Minimal')" (change)="toggleFilter('style', 'Minimal')"> Minimal</label>
-        <label><input type="checkbox" [checked]="isFilterActive('style', 'Classic')" (change)="toggleFilter('style', 'Classic')"> Classic</label>
-        <label><input type="checkbox" [checked]="isFilterActive('style', 'Luxury')" (change)="toggleFilter('style', 'Luxury')"> Luxury</label>
-      </div>
-
-      <div class="filter-group">
-        <h4>FINISH</h4>
-        <label><input type="checkbox" [checked]="isFilterActive('finish', 'Matte')" (change)="toggleFilter('finish', 'Matte')"> Matte</label>
-        <label><input type="checkbox" [checked]="isFilterActive('finish', 'Satin')" (change)="toggleFilter('finish', 'Satin')"> Satin</label>
-        <label><input type="checkbox" [checked]="isFilterActive('finish', 'Glossy')" (change)="toggleFilter('finish', 'Glossy')"> Glossy</label>
-      </div>
-
-      <button class="btn-clear" (click)="clearAllFilters()">Clear All Filters</button>
-    </aside>
-
-    <!-- GRID AREA -->
-    <section class="grid-area">
-      <div class="results-header">
-        <span>{{ filteredColors.length }} Colors</span>
-        <span *ngIf="filteredColors.length > 0">Showing 1–{{ filteredColors.length }} of {{ filteredColors.length }}</span>
-      </div>
-
-      <div class="skeleton-grid" *ngIf="isLoading">
-        <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6,7,8]">
-          <div class="skel-swatch"></div>
-          <div class="skel-text"></div>
-          <div class="skel-text short"></div>
-          <div class="skel-btn"></div>
+      <div class="filter-section">
+        <h4>Color Temperature</h4>
+        <div class="filter-options">
+          <label class="checkbox-label" *ngFor="let t of ['Cool', 'Warm', 'Neutral', 'Accent']">
+            <input type="checkbox" [checked]="isFilterActive('temperature', t)" (change)="toggleFilter('temperature', t)">
+            <span class="custom-checkbox"></span>
+            {{ t }}
+          </label>
         </div>
       </div>
 
-      <div class="colors-grid" *ngIf="!isLoading && filteredColors.length > 0">
-        <div class="color-card premium-card" *ngFor="let color of filteredColors" (click)="openModal(color)">
+      <div class="filter-section">
+        <h4>Tone</h4>
+        <div class="filter-options">
+          <label class="checkbox-label" *ngFor="let t of ['Light', 'Medium', 'Dark']">
+            <input type="checkbox" [checked]="isFilterActive('tone', t)" (change)="toggleFilter('tone', t)">
+            <span class="custom-checkbox"></span>
+            {{ t }}
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h4>Finish</h4>
+        <div class="filter-options">
+          <label class="checkbox-label" *ngFor="let f of ['Matte', 'Satin', 'Glossy']">
+            <input type="checkbox" [checked]="isFilterActive('finish', f)" (change)="toggleFilter('finish', f)">
+            <span class="custom-checkbox"></span>
+            {{ f }}
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <h4>Room</h4>
+        <div class="filter-options">
+          <label class="checkbox-label" *ngFor="let r of ['Living Room', 'Bedroom', 'Kitchen', 'Dining Room', 'Study', 'Bathroom', 'Balcony']">
+            <input type="checkbox" [checked]="isFilterActive('room', r)" (change)="toggleFilter('room', r)">
+            <span class="custom-checkbox"></span>
+            {{ r }}
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-actions" *ngIf="activeFilterCount > 0 || searchQuery">
+        <button class="clear-btn" (click)="clearAllFilters()">Clear All ({{ activeFilterCount }})</button>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+      <!-- Toolbar: Search, Find My Color, Sort -->
+      <div class="toolbar">
+        <div class="search-wrapper">
+          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search by name, hex, family, or room..." [(ngModel)]="searchQuery">
+        </div>
+        
+        <div class="toolbar-actions">
+          <button class="btn-premium find-my-color-btn" (click)="openWizard()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            Find My Color
+          </button>
+
+          <button class="mobile-filter-toggle" (click)="isMobileFilterOpen = true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Filters <span class="badge" *ngIf="activeFilterCount">{{ activeFilterCount }}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Header -->
+      <div class="results-header">
+        <div>
+          <h2>{{ showOnlySaved ? 'Saved Colours' : activeCategory }}</h2>
+          <p class="results-count">{{ filteredColors.length }} colours found</p>
+        </div>
+        
+        <div class="sort-wrapper">
+          <label>Sort By:</label>
+          <select [(ngModel)]="sortBy">
+            <option>Recommended</option>
+            <option>Most Popular</option>
+            <option>A-Z</option>
+            <option>Z-A</option>
+            <option>Light to Dark</option>
+            <option>Dark to Light</option>
+            <option>Recently Added</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Color Grid -->
+      <div class="color-grid" *ngIf="filteredColors.length > 0; else emptyState">
+        <div class="color-card" *ngFor="let color of filteredColors" (click)="openModal(color)">
           
-          <div class="color-swatch-large" [style.background-color]="color.hex">
-            <div class="card-overlay-actions">
-              <label class="compare-checkbox" (click)="$event.stopPropagation()">
-                <input type="checkbox" [checked]="isInCompare(color)" (change)="toggleCompare(color, $event)"> Compare
-              </label>
-            </div>
+          <div class="card-swatch-area" [style.backgroundColor]="color.hex">
+            <button class="favorite-btn" (click)="toggleFavorite(color, $event)" [class.active]="isFavorite(color.id)">
+              <svg *ngIf="!isFavorite(color.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+              <svg *ngIf="isFavorite(color.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+            <button class="try-color-hover-btn" (click)="tryColor(color, $event)">Try This Color</button>
           </div>
-          
-          <div class="color-info-premium">
-            <div class="title-row">
+
+          <div class="card-content">
+            <div class="card-header">
               <h3>{{ color.name }}</h3>
-              <button class="btn-heart" (click)="toggleFavorite(color, $event)" [class.favorited]="isFavorite(color.id)">
-                <svg *ngIf="!isFavorite(color.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
-                <svg *ngIf="isFavorite(color.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
-              </button>
+              <span class="hex">{{ color.hex }}</span>
             </div>
             
-            <p class="hex-code">{{ color.hex }}</p>
-
-            <div class="tags-row">
-              <span class="tag temp-tag" *ngIf="color.temperature">[{{ color.temperature }}]</span>
-              <span class="tag finish-pill" *ngFor="let finish of color.finishes" 
-                    [class.active]="selectedFinishes[color.id.toString()] === finish"
-                    (click)="selectFinish(color.id, finish, $event)">
-                [{{ finish }}]
-              </span>
+            <div class="badges">
+              <span class="badge tone" *ngIf="color.tone">{{ color.tone }}</span>
+              <span class="badge temp" *ngIf="color.temperature">{{ color.temperature }}</span>
             </div>
-
-            <p class="description">{{ color.description }}</p>
-
-            <button class="btn-primary-full" (click)="tryColor(color, $event)">See It In Your Room →</button>
+            
+            <div class="finishes" *ngIf="color.finishes?.length">
+              <span class="finish-label">Available in:</span>
+              <span class="finish-list">{{ color.finishes.join(', ') }}</span>
+            </div>
           </div>
         </div>
       </div>
-      
-      <div class="no-results-premium" *ngIf="!isLoading && filteredColors.length === 0">
-        <h2>No colors found</h2>
-        <p>Try changing your filters or search criteria.</p>
-        <button class="btn-clear" (click)="clearAllFilters()">Clear All Filters</button>
-      </div>
 
-    </section>
-  </main>
-</div>
-
-<!-- COMPARE BAR -->
-<div class="compare-bar" [class.show]="compareColors.length > 0">
-  <div class="compare-info">
-    <span>{{ compareColors.length }} colors selected</span>
-    <span class="max-msg" *ngIf="compareColors.length >= 3">(Max 3)</span>
-  </div>
-  <div class="compare-actions">
-    <button class="btn-text" (click)="clearCompare()">Clear</button>
-    <button class="btn-primary" (click)="compareMode = true">Compare Colors</button>
-  </div>
-</div>
-
-<!-- COMPARE VIEW MODAL -->
-<div class="compare-overlay" *ngIf="compareMode" (click)="compareMode = false">
-  <div class="compare-modal" (click)="$event.stopPropagation()">
-    <button class="close-btn" (click)="compareMode = false">&times;</button>
-    <h2>Compare Colors</h2>
-    <div class="compare-grid">
-      <div class="compare-col" *ngFor="let color of compareColors">
-        <h3>{{ color.name }}</h3>
-        <p>{{ color.hex }}</p>
-        <div class="comp-swatch" [style.background-color]="color.hex"></div>
-        <div class="comp-prop">{{ color.temperature || 'N/A' }}</div>
-        <div class="comp-prop finishes">
-          <span *ngFor="let f of color.finishes">{{ f }}</span>
+      <ng-template #emptyState>
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <h3>No colours found</h3>
+          <p>Try adjusting your search or clearing your filters to see more results.</p>
+          <button class="btn-outline" (click)="clearAllFilters()">Clear All Filters</button>
         </div>
-        <button class="btn-primary" (click)="tryColor(color, $event); compareMode = false">See In My Room</button>
-      </div>
+      </ng-template>
     </div>
   </div>
 </div>
 
-<!-- COLOR DETAILS MODAL -->
-<div class="details-overlay" [class.show]="selectedModalColor" (click)="closeModal()">
-  <div class="details-modal" (click)="$event.stopPropagation()" *ngIf="selectedModalColor">
-    <button class="close-btn" (click)="closeModal()">&times;</button>
+<!-- ============================================== -->
+<!-- COLOR DETAILS MODAL                            -->
+<!-- ============================================== -->
+<div class="modal-backdrop" *ngIf="selectedModalColor" (click)="closeModal()">
+  <div class="modal-content details-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeModal()">×</button>
     
-    <div class="modal-layout">
-      <div class="modal-swatch-area" [style.background-color]="selectedModalColor.hex">
-      </div>
-      <div class="modal-info-area">
+    <div class="modal-split">
+      <div class="modal-swatch" [style.backgroundColor]="selectedModalColor.hex"></div>
+      
+      <div class="modal-info">
         <h2>{{ selectedModalColor.name }}</h2>
-        <p class="hex">{{ selectedModalColor.hex }}</p>
+        <p class="hex-large">{{ selectedModalColor.hex }}</p>
         
-        <div class="meta">
-          <p><strong>Category:</strong> {{ selectedModalColor.category }}</p>
-          <p *ngIf="selectedModalColor.temperature"><strong>Temperature:</strong> {{ selectedModalColor.temperature }}</p>
-        </div>
-
-        <p class="desc">"{{ selectedModalColor.description }}"</p>
-
-        <div class="meta-list">
-          <strong>Available finishes:</strong>
-          <ul>
-            <li *ngFor="let f of selectedModalColor.finishes">○ {{ f }}</li>
-          </ul>
+        <div class="badges">
+          <span class="badge">{{ selectedModalColor.temperature }}</span>
+          <span class="badge" *ngIf="selectedModalColor.tone">{{ selectedModalColor.tone }} Tone</span>
         </div>
         
-        <div class="meta-list" *ngIf="selectedModalColor.rooms">
-          <strong>Recommended rooms:</strong>
-          <div class="rooms-tags">
-            <span *ngFor="let r of selectedModalColor.rooms">{{ r }}</span>
+        <p class="description">{{ selectedModalColor.description }}</p>
+
+        <div class="detail-section" *ngIf="selectedModalColor.rooms?.length">
+          <h4>Recommended For</h4>
+          <p>{{ selectedModalColor.rooms.join(', ') }}</p>
+        </div>
+
+        <div class="detail-section">
+          <h4>Select Finish</h4>
+          <div class="finish-selector">
+            <button *ngFor="let f of selectedModalColor.finishes" 
+                    [class.active]="selectedFinishes[selectedModalColor.id.toString()] === f"
+                    (click)="selectFinish(selectedModalColor.id, f)">
+              {{ f }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Goes Well With Recommendations -->
+        <div class="detail-section goes-well-with">
+          <h4>Goes Well With</h4>
+          <div class="loading-recs" *ngIf="isLoadingRecommendations">Loading recommendations...</div>
+          <div class="rec-grid" *ngIf="!isLoadingRecommendations && recommendedColors.length > 0">
+            <div class="rec-card" *ngFor="let rec of recommendedColors" (click)="openModal(rec)">
+              <div class="rec-swatch" [style.backgroundColor]="rec.hex"></div>
+              <div class="rec-name">{{ rec.name }}</div>
+            </div>
           </div>
         </div>
 
         <div class="modal-actions">
-          <button class="btn-primary" (click)="tryColor(selectedModalColor, $event)">See It In Your Room</button>
-          <button class="btn-outline" (click)="toggleFavorite(selectedModalColor, $event)">
-            {{ isFavorite(selectedModalColor.id) ? '♥ Favorited' : '♡ Add to Favorites' }}
+          <button class="btn-primary" (click)="tryColor(selectedModalColor)">Try This Color</button>
+          <button class="btn-outline" (click)="toggleFavorite(selectedModalColor)">
+            {{ isFavorite(selectedModalColor.id) ? 'Remove Favorite' : 'Add to Favorites' }}
           </button>
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- ============================================== -->
+<!-- FIND MY COLOR WIZARD                           -->
+<!-- ============================================== -->
+<div class="modal-backdrop wizard-backdrop" *ngIf="isWizardOpen" (click)="closeWizard()">
+  <div class="modal-content wizard-modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeWizard()">×</button>
+    
+    <!-- Progress Indicator -->
+    <div class="wizard-progress">
+      <div class="progress-bar"><div class="fill" [style.width.%]="(wizardStep / 4) * 100"></div></div>
+      <div class="step-text">Step {{ wizardStep }} of 3</div>
+    </div>
+
+    <!-- Step 1: Room -->
+    <div class="wizard-step" *ngIf="wizardStep === 1">
+      <h2>What room are you painting?</h2>
+      <div class="wizard-options">
+        <button *ngFor="let room of ['Living Room', 'Bedroom', 'Kitchen', 'Dining Room', 'Study', 'Bathroom']"
+                [class.active]="wizardAnswers.room === room"
+                (click)="setWizardAnswer('room', room)">
+          {{ room }}
+        </button>
+      </div>
+      <button class="btn-primary next-btn" [disabled]="!wizardAnswers.room" (click)="nextWizardStep()">Next Step</button>
+    </div>
+
+    <!-- Step 2: Mood -->
+    <div class="wizard-step" *ngIf="wizardStep === 2">
+      <h2>What mood do you want to create?</h2>
+      <div class="wizard-options">
+        <button *ngFor="let mood of ['Calm', 'Energetic', 'Minimal', 'Luxury', 'Natural', 'Cozy']"
+                [class.active]="wizardAnswers.mood === mood"
+                (click)="setWizardAnswer('mood', mood)">
+          {{ mood }}
+        </button>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-text" (click)="wizardStep = 1">Back</button>
+        <button class="btn-primary next-btn" [disabled]="!wizardAnswers.mood" (click)="nextWizardStep()">Next Step</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Tone -->
+    <div class="wizard-step" *ngIf="wizardStep === 3">
+      <h2>What type of color do you prefer?</h2>
+      <div class="wizard-options">
+        <button *ngFor="let tone of ['Light', 'Medium', 'Dark', 'No Preference']"
+                [class.active]="wizardAnswers.tone === tone"
+                (click)="setWizardAnswer('tone', tone)">
+          {{ tone }}
+        </button>
+      </div>
+      <div class="wizard-nav">
+        <button class="btn-text" (click)="wizardStep = 2">Back</button>
+        <button class="btn-primary next-btn" [disabled]="!wizardAnswers.tone" (click)="nextWizardStep()">Show My Colours</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Results -->
+    <div class="wizard-step results-step" *ngIf="wizardStep === 4">
+      <h2>Your Recommended Colours</h2>
+      <p>Based on your selections ({{ wizardAnswers.room }}, {{ wizardAnswers.mood }}, {{ wizardAnswers.tone }}).</p>
+      
+      <div class="wizard-results-grid">
+        <div class="wizard-result-card" *ngFor="let color of wizardRecommendations" (click)="openModal(color)">
+          <div class="wr-swatch" [style.backgroundColor]="color.hex">
+            <button class="try-btn" (click)="tryColor(color, $event)">Try</button>
+          </div>
+          <div class="wr-info">
+            <h4>{{ color.name }}</h4>
+            <span>{{ color.hex }}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="wizard-nav center">
+        <button class="btn-outline" (click)="closeWizard()">Explore All Colours</button>
+        <button class="btn-text" (click)="wizardStep = 1">Retake Quiz</button>
+      </div>
+    </div>
+
   </div>
 </div>

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ImageService, AppColor } from '../../services/image.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-visualizer',
@@ -31,7 +32,7 @@ export class VisualizerComponent implements OnInit {
   activeCategory: string = 'All';
   categories = ['All', 'Warm', 'Cool', 'Neutral', 'Accent'];
 
-  constructor(private imageService: ImageService, private router: Router) {
+  constructor(private imageService: ImageService, private router: Router, private authService: AuthService) {
     const nav = this.router.getCurrentNavigation();
     if (nav?.extras.state) {
       if (nav.extras.state['cameFromColorsPage']) {
@@ -104,16 +105,20 @@ export class VisualizerComponent implements OnInit {
   }
 
   saveDesign() {
-    const designData = {
-      color: this.selectedColor,
-      opacity: this.opacity,
-      brightness: this.brightness,
-      finish: this.finish,
-      designType: this.designType,
-      date: new Date().toISOString()
+    const action = () => {
+      const designData = {
+        color: this.selectedColor,
+        opacity: this.opacity,
+        brightness: this.brightness,
+        finish: this.finish,
+        designType: this.designType,
+        date: new Date().toISOString()
+      };
+      localStorage.setItem('savedSmartPaintDesign', JSON.stringify(designData));
+      alert('Design saved successfully! It will appear in My Projects.');
     };
-    localStorage.setItem('savedSmartPaintDesign', JSON.stringify(designData));
-    alert('Design saved successfully! It will appear in My Projects.');
+
+    this.authService.requireLogin(action);
   }
 
   downloadImage() {
