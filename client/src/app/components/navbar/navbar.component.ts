@@ -1,13 +1,63 @@
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
+  searchQuery: string = '';
+  isMobileMenuOpen: boolean = false;
+  isProfileMenuOpen: boolean = false;
+  isCartOpen: boolean = false;
+  cartCount: number = 0;
+  isScrolled: boolean = false;
 
+  constructor(public authService: AuthService, private router: Router) {}
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 20;
+  }
+
+  onSearch() {
+    if (this.searchQuery.trim()) {
+      this.router.navigate(['/colors'], { queryParams: { search: this.searchQuery } });
+      this.isMobileMenuOpen = false;
+    }
+  }
+
+  toggleMobileMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
+
+  toggleProfileMenu(event: Event) {
+    event.stopPropagation();
+    this.isProfileMenuOpen = !this.isProfileMenuOpen;
+    this.isCartOpen = false;
+  }
+
+  toggleCart(event: Event) {
+    event.stopPropagation();
+    this.isCartOpen = !this.isCartOpen;
+    this.isProfileMenuOpen = false;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick() {
+    this.isProfileMenuOpen = false;
+    this.isCartOpen = false;
+  }
+
+  logout() {
+    this.authService.logout();
+    this.isProfileMenuOpen = false;
+    this.router.navigate(['/']);
+  }
 }

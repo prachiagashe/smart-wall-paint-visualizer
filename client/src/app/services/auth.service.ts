@@ -17,4 +17,26 @@ export class AuthService {
   login(loginData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, loginData);
   }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
+  getUser(): any {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try { return JSON.parse(userStr); } catch (e) { return null; }
+    }
+    return null;
+  }
+
+  isAdmin(): boolean {
+    const user = this.getUser();
+    return user && user.role === 'admin';
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  }
 }

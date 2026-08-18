@@ -1,75 +1,230 @@
 <div class="page-container">
 
-  <!-- Main Content -->
-  <main class="colors-main">
+  <!-- HERO SECTION -->
+  <header class="colors-hero">
+    <h1>Find a Color You'll Love</h1>
+    <p>Explore beautiful shades and see how they'll look in your actual room.</p>
     
-    <div class="header-content-centered">
-      <span class="guide-tag">COLORS</span>
-      <h1>Explore our curated collection of wall colors and find the perfect shade for your space.</h1>
-    </div>
-
-    <div class="search-container-centered">
+    <div class="search-sort-bar">
       <div class="search-box">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="11" cy="11" r="8" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
-        <input type="text" placeholder="Search colors..." [(ngModel)]="searchQuery" />
+        <input type="text" placeholder="Search by color name or HEX code..." [(ngModel)]="searchQuery" />
+      </div>
+      <div class="sort-box">
+        <select [(ngModel)]="sortBy">
+          <option value="Popular">Popular</option>
+          <option value="A-Z">A–Z</option>
+          <option value="Newest">Newest</option>
+          <option value="Most Used">Most Used</option>
+        </select>
       </div>
     </div>
+  </header>
 
-    <div class="filters-centered">
-      <div class="pills-container">
-        <button class="filter-pill" *ngFor="let filter of filters" [class.active]="activeFilter === filter"
-          (click)="setFilter(filter)">
-          {{ filter }}
-        </button>
+  <!-- POPULAR COLORS (Horizontal) -->
+  <section class="popular-section" *ngIf="popularColors.length > 0 && !searchQuery && activeCategory === 'All Colors' && filters.temperature.length === 0">
+    <div class="section-title">Popular This Week</div>
+    <div class="popular-flex">
+      <div class="popular-item" *ngFor="let color of popularColors" (click)="openModal(color)">
+        <div class="pop-swatch" [style.background-color]="color.hex"></div>
+        <span>{{ color.name }}</span>
       </div>
     </div>
+  </section>
 
-    <div class="colors-grid" *ngIf="filteredColors.length > 0; else noResults">
-      <div class="color-card" *ngFor="let color of filteredColors">
-        
-        <div class="color-swatch" [style.background-color]="color.hex"></div>
-        
-        <div class="color-info">
-          <div class="title-row">
-            <h3>{{ color.name }}</h3>
-            <button class="btn-heart" (click)="toggleFavorite(color)" [class.favorited]="isFavorite(color.id)">
-              <svg *ngIf="!isFavorite(color.id)" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-              <svg *ngIf="isFavorite(color.id)" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-              </svg>
-            </button>
+  <!-- CATEGORY NAVIGATION -->
+  <nav class="category-nav">
+    <button class="cat-btn" *ngFor="let cat of categories" [class.active]="activeCategory === cat" (click)="setCategory(cat)">
+      {{ cat }}
+    </button>
+  </nav>
+
+  <main class="colors-main">
+    
+    <!-- MOBILE FILTER TOGGLE -->
+    <button class="mobile-filter-btn" (click)="isMobileFilterOpen = !isMobileFilterOpen">
+      Filters
+    </button>
+
+    <!-- SIDEBAR FILTERS -->
+    <aside class="filters-sidebar" [class.open]="isMobileFilterOpen">
+      <h3>FILTER BY</h3>
+      
+      <div class="filter-group">
+        <h4>COLOR TEMPERATURE</h4>
+        <label><input type="checkbox" [checked]="isFilterActive('temperature', 'Cool')" (change)="toggleFilter('temperature', 'Cool')"> Cool</label>
+        <label><input type="checkbox" [checked]="isFilterActive('temperature', 'Warm')" (change)="toggleFilter('temperature', 'Warm')"> Warm</label>
+        <label><input type="checkbox" [checked]="isFilterActive('temperature', 'Neutral')" (change)="toggleFilter('temperature', 'Neutral')"> Neutral</label>
+      </div>
+
+      <div class="filter-group">
+        <h4>ROOM</h4>
+        <label><input type="checkbox" [checked]="isFilterActive('room', 'Living Room')" (change)="toggleFilter('room', 'Living Room')"> Living Room</label>
+        <label><input type="checkbox" [checked]="isFilterActive('room', 'Bedroom')" (change)="toggleFilter('room', 'Bedroom')"> Bedroom</label>
+        <label><input type="checkbox" [checked]="isFilterActive('room', 'Dining Room')" (change)="toggleFilter('room', 'Dining Room')"> Dining Room</label>
+        <label><input type="checkbox" [checked]="isFilterActive('room', 'Kitchen')" (change)="toggleFilter('room', 'Kitchen')"> Kitchen</label>
+        <label><input type="checkbox" [checked]="isFilterActive('room', 'Study')" (change)="toggleFilter('room', 'Study')"> Study</label>
+        <label><input type="checkbox" [checked]="isFilterActive('room', 'Bathroom')" (change)="toggleFilter('room', 'Bathroom')"> Bathroom</label>
+      </div>
+
+      <div class="filter-group">
+        <h4>STYLE</h4>
+        <label><input type="checkbox" [checked]="isFilterActive('style', 'Modern')" (change)="toggleFilter('style', 'Modern')"> Modern</label>
+        <label><input type="checkbox" [checked]="isFilterActive('style', 'Minimal')" (change)="toggleFilter('style', 'Minimal')"> Minimal</label>
+        <label><input type="checkbox" [checked]="isFilterActive('style', 'Classic')" (change)="toggleFilter('style', 'Classic')"> Classic</label>
+        <label><input type="checkbox" [checked]="isFilterActive('style', 'Luxury')" (change)="toggleFilter('style', 'Luxury')"> Luxury</label>
+      </div>
+
+      <div class="filter-group">
+        <h4>FINISH</h4>
+        <label><input type="checkbox" [checked]="isFilterActive('finish', 'Matte')" (change)="toggleFilter('finish', 'Matte')"> Matte</label>
+        <label><input type="checkbox" [checked]="isFilterActive('finish', 'Satin')" (change)="toggleFilter('finish', 'Satin')"> Satin</label>
+        <label><input type="checkbox" [checked]="isFilterActive('finish', 'Glossy')" (change)="toggleFilter('finish', 'Glossy')"> Glossy</label>
+      </div>
+
+      <button class="btn-clear" (click)="clearAllFilters()">Clear All Filters</button>
+    </aside>
+
+    <!-- GRID AREA -->
+    <section class="grid-area">
+      <div class="results-header">
+        <span>{{ filteredColors.length }} Colors</span>
+        <span *ngIf="filteredColors.length > 0">Showing 1–{{ filteredColors.length }} of {{ filteredColors.length }}</span>
+      </div>
+
+      <div class="skeleton-grid" *ngIf="isLoading">
+        <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6,7,8]">
+          <div class="skel-swatch"></div>
+          <div class="skel-text"></div>
+          <div class="skel-text short"></div>
+          <div class="skel-btn"></div>
+        </div>
+      </div>
+
+      <div class="colors-grid" *ngIf="!isLoading && filteredColors.length > 0">
+        <div class="color-card premium-card" *ngFor="let color of filteredColors" (click)="openModal(color)">
+          
+          <div class="color-swatch-large" [style.background-color]="color.hex">
+            <div class="card-overlay-actions">
+              <label class="compare-checkbox" (click)="$event.stopPropagation()">
+                <input type="checkbox" [checked]="isInCompare(color)" (change)="toggleCompare(color, $event)"> Compare
+              </label>
+            </div>
           </div>
+          
+          <div class="color-info-premium">
+            <div class="title-row">
+              <h3>{{ color.name }}</h3>
+              <button class="btn-heart" (click)="toggleFavorite(color, $event)" [class.favorited]="isFavorite(color.id)">
+                <svg *ngIf="!isFavorite(color.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
+                <svg *ngIf="isFavorite(color.id)" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" /></svg>
+              </button>
+            </div>
+            
+            <p class="hex-code">{{ color.hex }}</p>
 
-          <div class="tags-row">
-            <span class="tag category-tag" [ngClass]="color.category.toLowerCase()">{{ color.category }}</span>
-            <span class="tag finish-pill" *ngFor="let finish of color.finishes" 
-                  [class.active]="selectedFinishes[color.id] === finish"
-                  (click)="selectFinish(color.id, finish)">
-              {{ finish }}
-            </span>
+            <div class="tags-row">
+              <span class="tag temp-tag" *ngIf="color.temperature">[{{ color.temperature }}]</span>
+              <span class="tag finish-pill" *ngFor="let finish of color.finishes" 
+                    [class.active]="selectedFinishes[color.id.toString()] === finish"
+                    (click)="selectFinish(color.id, finish, $event)">
+                [{{ finish }}]
+              </span>
+            </div>
+
+            <p class="description">{{ color.description }}</p>
+
+            <button class="btn-primary-full" (click)="tryColor(color, $event)">See It In Your Room →</button>
           </div>
+        </div>
+      </div>
+      
+      <div class="no-results-premium" *ngIf="!isLoading && filteredColors.length === 0">
+        <h2>No colors found</h2>
+        <p>Try changing your filters or search criteria.</p>
+        <button class="btn-clear" (click)="clearAllFilters()">Clear All Filters</button>
+      </div>
 
-          <p class="description">{{ color.description }}</p>
+    </section>
+  </main>
+</div>
 
-          <button class="btn-outline-primary" (click)="tryColor(color)">Try This Color</button>
+<!-- COMPARE BAR -->
+<div class="compare-bar" [class.show]="compareColors.length > 0">
+  <div class="compare-info">
+    <span>{{ compareColors.length }} colors selected</span>
+    <span class="max-msg" *ngIf="compareColors.length >= 3">(Max 3)</span>
+  </div>
+  <div class="compare-actions">
+    <button class="btn-text" (click)="clearCompare()">Clear</button>
+    <button class="btn-primary" (click)="compareMode = true">Compare Colors</button>
+  </div>
+</div>
+
+<!-- COMPARE VIEW MODAL -->
+<div class="compare-overlay" *ngIf="compareMode" (click)="compareMode = false">
+  <div class="compare-modal" (click)="$event.stopPropagation()">
+    <button class="close-btn" (click)="compareMode = false">&times;</button>
+    <h2>Compare Colors</h2>
+    <div class="compare-grid">
+      <div class="compare-col" *ngFor="let color of compareColors">
+        <h3>{{ color.name }}</h3>
+        <p>{{ color.hex }}</p>
+        <div class="comp-swatch" [style.background-color]="color.hex"></div>
+        <div class="comp-prop">{{ color.temperature || 'N/A' }}</div>
+        <div class="comp-prop finishes">
+          <span *ngFor="let f of color.finishes">{{ f }}</span>
+        </div>
+        <button class="btn-primary" (click)="tryColor(color, $event); compareMode = false">See In My Room</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COLOR DETAILS MODAL -->
+<div class="details-overlay" [class.show]="selectedModalColor" (click)="closeModal()">
+  <div class="details-modal" (click)="$event.stopPropagation()" *ngIf="selectedModalColor">
+    <button class="close-btn" (click)="closeModal()">&times;</button>
+    
+    <div class="modal-layout">
+      <div class="modal-swatch-area" [style.background-color]="selectedModalColor.hex">
+      </div>
+      <div class="modal-info-area">
+        <h2>{{ selectedModalColor.name }}</h2>
+        <p class="hex">{{ selectedModalColor.hex }}</p>
+        
+        <div class="meta">
+          <p><strong>Category:</strong> {{ selectedModalColor.category }}</p>
+          <p *ngIf="selectedModalColor.temperature"><strong>Temperature:</strong> {{ selectedModalColor.temperature }}</p>
+        </div>
+
+        <p class="desc">"{{ selectedModalColor.description }}"</p>
+
+        <div class="meta-list">
+          <strong>Available finishes:</strong>
+          <ul>
+            <li *ngFor="let f of selectedModalColor.finishes">○ {{ f }}</li>
+          </ul>
+        </div>
+        
+        <div class="meta-list" *ngIf="selectedModalColor.rooms">
+          <strong>Recommended rooms:</strong>
+          <div class="rooms-tags">
+            <span *ngFor="let r of selectedModalColor.rooms">{{ r }}</span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-primary" (click)="tryColor(selectedModalColor, $event)">See It In Your Room</button>
+          <button class="btn-outline" (click)="toggleFavorite(selectedModalColor, $event)">
+            {{ isFavorite(selectedModalColor.id) ? '♥ Favorited' : '♡ Add to Favorites' }}
+          </button>
         </div>
       </div>
     </div>
-    
-    <ng-template #noResults>
-      <div class="no-results">
-        <p>No colors found matching your criteria.</p>
-        <button class="btn-outline-primary" (click)="searchQuery = ''; setFilter('All')">Clear Search</button>
-      </div>
-    </ng-template>
-
-  </main>
+  </div>
 </div>
