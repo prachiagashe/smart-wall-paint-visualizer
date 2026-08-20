@@ -1,8 +1,10 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -11,21 +13,33 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   isMobileMenuOpen: boolean = false;
   isProfileMenuOpen: boolean = false;
   isCartOpen: boolean = false;
   cartCount: number = 0;
   isScrolled: boolean = false;
+  
+  private cartSub!: Subscription;
 
-  constructor(public authService: AuthService, private router: Router) {
+  constructor(public authService: AuthService, private router: Router, private cartService: CartService) {
     // Listen to router events to close mobile menu on navigation
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.isMobileMenuOpen = false;
       }
     });
+  }
+
+  ngOnInit() {
+    this.cartSub = this.cartService.cartCount$.subscribe(count => {
+      this.cartCount = count;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.cartSub) this.cartSub.unsubscribe();
   }
 
   // Auth Gating Methods

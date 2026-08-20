@@ -4,6 +4,7 @@ import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ImageService, AppColor } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-colors',
@@ -43,6 +44,8 @@ export class ColorsComponent implements OnInit {
   selectedModalColor: AppColor | null = null;
   recommendedColors: AppColor[] = [];
   isLoadingRecommendations: boolean = false;
+  showToast: boolean = false;
+  toastMessage: string = '';
 
   // Find My Color Wizard
   isWizardOpen: boolean = false;
@@ -54,7 +57,8 @@ export class ColorsComponent implements OnInit {
     private imageService: ImageService, 
     public authService: AuthService, 
     private router: Router, 
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cartService: CartService
   ) {}
 
   async ngOnInit() {
@@ -239,6 +243,63 @@ export class ColorsComponent implements OnInit {
         cameFromColorsPage: true
       }
     });
+  }
+
+  async selectRelatedShade(shade: AppColor) {
+    this.selectedModalColor = shade;
+    this.isLoadingRecommendations = true;
+    this.recommendedColors = await this.imageService.getRecommendations(shade.id);
+    this.isLoadingRecommendations = false;
+  }
+
+  addToCart(color: AppColor) {
+    const action = () => {
+      const finish = this.selectedFinishes[color.id.toString()] || (color.finishes && color.finishes[0]) || 'Matte';
+      this.cartService.addToCart({
+        colorId: color.id,
+        colorName: color.name,
+        hexCode: color.hex,
+        finish: finish,
+        quantity: 1
+      });
+      
+      this.toastMessage = 'Color added to cart.';
+      this.showToast = true;
+      setTimeout(() => {
+        this.showToast = false;
+      }, 3000);
+    };
+
+    this.authService.requireLogin(action);
+  }
+
+  onRoomImageUpload(event: Event, color: AppColor) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      
+      const action = () => {
+        reader.onload = (e) => {
+          if (e.target && e.target.result) {
+            this.imageService.setImage(e.target.result);
+            const selectedFinish = this.selectedFinishes[color.id.toString()] || (color.finishes && color.finishes[0]) || 'matte';
+            
+            this.router.navigate(['/visualizer'], {
+              state: {
+                color: color,
+                finish: selectedFinish.toLowerCase(),
+                cameFromColorsPage: true
+              }
+            });
+            this.closeModal();
+          }
+        };
+        reader.readAsDataURL(file);
+      };
+
+      this.authService.requireLogin(action);
+    }
   }
 
   // --- FIND MY COLOR WIZARD ---

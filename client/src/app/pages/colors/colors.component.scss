@@ -1,4 +1,5 @@
 @import '../../../styles.scss';
+$primary-green: #3F604F;
 
 // Layout & Container
 .color-catalogue-container {
@@ -506,85 +507,230 @@
   }
 }
 
+// Toast Notification
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  border-left: 4px solid $primary-green;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 500;
+  color: #333;
+  z-index: 9999;
+  transform: translateX(120%);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+  &.show {
+    transform: translateX(0);
+  }
+
+  svg {
+    color: $primary-green;
+  }
+}
+
+// Modal Backdrop Animation Overrides
+.modal-backdrop {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  
+  &.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
 // Details Modal specifics
 .details-modal {
+  max-width: 1000px;
+  transform: scale(0.95);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  
+  .modal-backdrop.show & {
+    transform: scale(1);
+    opacity: 1;
+  }
+
   .modal-split {
     display: flex;
     min-height: 500px;
   }
 
-  .modal-swatch {
+  .modal-swatch-area {
     flex: 1;
     min-width: 300px;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px;
+    color: white; // Fallback, will depend on color brightness in real life
+
+    .modal-fav-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: white;
+      transition: all 0.2s;
+      backdrop-filter: blur(4px);
+
+      &:hover { transform: scale(1.1); background: rgba(255, 255, 255, 0.3); }
+      &.active { color: #ff4b4b; background: white; }
+    }
+
+    .swatch-details {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 24px;
+      border-radius: 12px;
+      color: #333;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+
+      h2 { font-size: 28px; margin: 0 0 4px 0; }
+      .hex-large { font-size: 16px; font-family: monospace; color: #666; margin: 0 0 16px 0; }
+      .badges { display: flex; gap: 8px; margin-bottom: 16px; .badge { background: #f0f0f0; padding: 4px 10px; border-radius: 4px; font-size: 12px; text-transform: uppercase; } }
+      .description { margin: 0; font-size: 14px; line-height: 1.5; color: #555; }
+    }
   }
 
-  .modal-info {
-    flex: 1;
+  .modal-info-area {
+    flex: 1.2;
     padding: 40px;
-
-    h2 { font-size: 32px; margin: 0 0 8px 0; }
-    .hex-large { font-size: 18px; color: #666; font-family: monospace; margin: 0 0 20px 0; }
-    
-    .description { font-size: 15px; line-height: 1.6; color: #555; margin-bottom: 30px; }
+    background: #fcfcfc;
+    display: flex;
+    flex-direction: column;
 
     .detail-section {
-      margin-bottom: 24px;
-      h4 { font-size: 14px; text-transform: uppercase; color: #888; margin: 0 0 12px 0; }
-      p { margin: 0; font-size: 15px; color: #333; }
+      margin-bottom: 32px;
+      h4 { font-size: 14px; text-transform: uppercase; color: #888; margin: 0 0 16px 0; letter-spacing: 0.5px; }
+    }
+
+    .horizontal-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      &::-webkit-scrollbar { height: 6px; }
+      &::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+      &::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+    }
+
+    .rec-card {
+      min-width: 80px;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.2s;
+
+      &:hover { transform: translateY(-4px); }
+      
+      .rec-swatch { 
+        height: 80px; 
+        border-radius: 12px; 
+        margin-bottom: 8px; 
+        border: 2px solid transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+
+        &.selected {
+          border-color: #333;
+          transform: scale(1.05);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+      }
+      .rec-name { font-size: 12px; color: #444; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px; }
     }
 
     .finish-selector {
       display: flex;
       gap: 12px;
-      flex-wrap: wrap;
-
       button {
-        padding: 8px 16px;
+        flex: 1;
+        padding: 12px;
         border: 1px solid #ddd;
         background: white;
-        border-radius: 20px;
+        border-radius: 8px;
+        font-weight: 500;
         cursor: pointer;
         transition: all 0.2s;
 
-        &.active {
-          border-color: $primary-green;
-          background: $primary-green;
-          color: white;
-        }
+        &.active { border-color: $primary-green; background: rgba($primary-green, 0.05); color: $primary-green; box-shadow: 0 0 0 1px $primary-green; }
+        &:hover:not(.active) { background: #f9f9f9; }
       }
     }
 
-    .goes-well-with {
-      margin-top: 32px;
-      padding-top: 24px;
-      border-top: 1px solid #eee;
-
-      .rec-grid {
+    .modal-actions-container {
+      margin-top: auto;
+      
+      .add-cart-btn {
+        width: 100%;
+        padding: 16px;
+        font-size: 16px;
+        border-radius: 8px;
+        background: $primary-green;
+        color: white;
+        border: none;
         display: flex;
-        gap: 16px;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-bottom: 16px;
+        
+        &:hover { background: darken($primary-green, 5%); transform: translateY(-2px); box-shadow: 0 4px 12px rgba($primary-green, 0.3); }
+      }
 
-        .rec-card {
+      .room-actions {
+        display: flex;
+        gap: 12px;
+
+        button, .btn-outline {
           flex: 1;
+          padding: 12px;
+          border-radius: 8px;
+          font-weight: 500;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
           cursor: pointer;
+          transition: all 0.2s;
           text-align: center;
-          transition: transform 0.2s;
+        }
 
-          &:hover { transform: translateY(-4px); }
+        .visualize-btn {
+          background: #222;
+          color: white;
+          border: none;
+          &:hover { background: #000; transform: translateY(-2px); }
+        }
 
-          .rec-swatch { height: 60px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #eee; }
-          .rec-name { font-size: 12px; color: #444; }
+        .upload-btn {
+          background: white;
+          border: 1px solid #ddd;
+          color: #333;
+          &:hover { border-color: #999; background: #f9f9f9; }
         }
       }
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 16px;
-      margin-top: 40px;
-
-      button { flex: 1; padding: 16px; font-size: 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-      .btn-primary { background: $primary-green; color: white; border: none; &:hover { background: darken($primary-green, 5%); } }
-      .btn-outline { background: white; color: $primary-green; border: 2px solid $primary-green; &:hover { background: #f0f7f3; } }
     }
   }
 }
