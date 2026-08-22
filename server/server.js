@@ -5,6 +5,8 @@ const connectDB = require("./db");
 const authRoutes = require("./routes/auth.routes");
 const colorRoutes = require("./routes/color.routes");
 const favoriteRoutes = require("./routes/favorite.routes");
+const cartRoutes = require("./routes/cart.routes");
+const orderRoutes = require("./routes/order.routes");
 
 const path = require("path");
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -22,6 +24,8 @@ connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/colors", colorRoutes);
 app.use("/api/favorites", favoriteRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Test route
 app.get("/", (req, res) => {

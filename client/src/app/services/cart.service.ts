@@ -1,41 +1,61 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 
 export interface CartItem {
-  colorId: string | number;
+  _id?: string;
+  productId: string;
   colorName: string;
+  colorCode: string;
   hexCode: string;
   finish: string;
   quantity: number;
+  price: number;
+  subtotal: number;
+}
+
+export interface Cart {
+  _id?: string;
+  userId: string;
+  items: CartItem[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
+  private apiUrl = 'http://localhost:5000/api/cart';
   private cartItems: CartItem[] = [];
   private cartCountSubject = new BehaviorSubject<number>(0);
   
   cartCount$ = this.cartCountSubject.asObservable();
 
-  constructor() {
+  constructor(private http: HttpClient) {
     this.loadCart();
   }
 
-  private loadCart() {
-    const saved = localStorage.getItem('smartpaint_cart');
-    if (saved) {
-      try {
-        this.cartItems = JSON.parse(saved);
-        this.updateCount();
-      } catch (e) {
-        console.error('Failed to parse cart items', e);
-      }
-    }
+  private getAuthHeaders() {
+    const token = localStorage.getItem('token');
+    return { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` }) };
   }
 
-  private saveCart() {
-    localStorage.setItem('smartpaint_cart', JSON.stringify(this.cartItems));
+  async loadCart() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.cartItems = [];
+      this.updateCount();
+      return;
+    }
+
+    try {
+      const cart = await firstValueFrom(this.http.get<Cart>(this.apiUrl, this.getAuthHeaders()));
+      this.cartItems = cart?.items || [];
+      this.updateCount();
+    } catch (error) {
+      console.error('Failed to load cart', error);
+      this.cartItems = [];
+      this.updateCount();
+    }
   }
 
   private updateCount() {
@@ -43,25 +63,54 @@ export class CartService {
     this.cartCountSubject.next(count);
   }
 
-  addToCart(item: CartItem) {
-    const existing = this.cartItems.find(i => i.colorId === item.colorId && i.finish === item.finish);
-    if (existing) {
-      existing.quantity += item.quantity;
-    } else {
-      this.cartItems.push(item);
+  async addToCart(item: { productId: string | number, finish: string, quantity: number }) {
+    try {
+      const cart = await firstValueFrom(this.http.post<Cart>(this.apiUrl, item, this.getAuthHeaders()));
+      this.cartItems = cart?.items || [];
+      this.updateCount();
+    } catch (error) {
+      console.error('Failed to add to cart', error);
+      throw error;
     }
-    
-    this.saveCart();
-    this.updateCount();
+  }
+
+  async updateQuantity(itemId: string, quantity: number) {
+    try {
+      const cart = await firstValueFrom(this.http.put<Cart>(`${this.apiUrl}/${itemId}`, { quantity }, this.getAuthHeaders()));
+      this.cartItems = cart?.items || [];
+      this.updateCount();
+    } catch (error) {
+      console.error('Failed to update quantity', error);
+      throw error;
+    }
+  }
+
+  async removeItem(itemId: string) {
+    try {
+      const cart = await firstValueFrom(this.http.delete<Cart>(`${this.apiUrl}/${itemId}`, this.getAuthHeaders()));
+      this.cartItems = cart?.items || [];
+      this.updateCount();
+    } catch (error) {
+      console.error('Failed to remove item', error);
+      throw error;
+    }
   }
 
   getCartItems(): CartItem[] {
     return [...this.cartItems];
   }
+  
+  getCartTotal(): number {
+    return this.cartItems.reduce((sum, item) => sum + item.subtotal, 0);
+  }
 
-  clearCart() {
-    this.cartItems = [];
-    this.saveCart();
-    this.updateCount();
+  async clearCart() {
+    try {
+      await firstValueFrom(this.http.delete(this.apiUrl, this.getAuthHeaders()));
+      this.cartItems = [];
+      this.updateCount();
+    } catch (error) {
+      console.error('Failed to clear cart', error);
+    }
   }
 }

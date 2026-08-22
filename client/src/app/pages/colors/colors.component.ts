@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ImageService, AppColor } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
+import { OrderService } from '../../services/order.service';
 
 @Component({
   selector: 'app-colors',
@@ -42,6 +43,7 @@ export class ColorsComponent implements OnInit {
 
   // Details Modal
   selectedModalColor: AppColor | null = null;
+  modalQuantity: number = 1;
   recommendedColors: AppColor[] = [];
   isLoadingRecommendations: boolean = false;
   showToast: boolean = false;
@@ -58,7 +60,8 @@ export class ColorsComponent implements OnInit {
     public authService: AuthService, 
     private router: Router, 
     private route: ActivatedRoute,
-    private cartService: CartService
+    private cartService: CartService,
+    private orderService: OrderService
   ) {}
 
   async ngOnInit() {
@@ -219,9 +222,12 @@ export class ColorsComponent implements OnInit {
 
   async openModal(color: AppColor) {
     this.selectedModalColor = color;
+    this.modalQuantity = 1;
     this.isLoadingRecommendations = true;
-    this.recommendedColors = await this.imageService.getRecommendations(color.id);
-    this.isLoadingRecommendations = false;
+    this.imageService.getRecommendations(color.id).then(recs => {
+      this.recommendedColors = recs;
+      this.isLoadingRecommendations = false;
+    });
   }
 
   closeModal() {
@@ -255,15 +261,14 @@ export class ColorsComponent implements OnInit {
   addToCart(color: AppColor) {
     const action = () => {
       const finish = this.selectedFinishes[color.id.toString()] || (color.finishes && color.finishes[0]) || 'Matte';
+      
       this.cartService.addToCart({
-        colorId: color.id,
-        colorName: color.name,
-        hexCode: color.hex,
+        productId: color.id,
         finish: finish,
-        quantity: 1
+        quantity: this.modalQuantity
       });
       
-      this.toastMessage = 'Color added to cart.';
+      this.toastMessage = `${this.modalQuantity}x ${color.name} added to cart.`;
       this.showToast = true;
       setTimeout(() => {
         this.showToast = false;
@@ -271,6 +276,45 @@ export class ColorsComponent implements OnInit {
     };
 
     this.authService.requireLogin(action);
+  }
+
+  buyNow(color: AppColor) {
+    const action = () => {
+      const finish = this.selectedFinishes[color.id.toString()] || (color.finishes && color.finishes[0]) || 'Matte';
+      const price = color.pricePerUnit || 250;
+      
+      this.orderService.setTempCheckoutItems([{
+        productId: color.id.toString(),
+        colorName: color.name,
+        colorCode: color.colorCode || '',
+        hexCode: color.hex,
+        finish: finish,
+        quantity: this.modalQuantity,
+        price: price,
+        subtotal: price * this.modalQuantity
+      }]);
+      
+      this.router.navigate(['/checkout']);
+      this.closeModal();
+    };
+
+    this.authService.requireLogin(action);
+  }
+
+  increaseQuantity() {
+    this.modalQuantity++;
+  }
+
+  decreaseQuantity() {
+    if (this.modalQuantity > 1) {
+      this.modalQuantity--;
+    }
+  }
+
+  get modalSubtotal(): number {
+    if (!this.selectedModalColor) return 0;
+    const price = this.selectedModalColor.pricePerUnit || 250;
+    return price * this.modalQuantity;
   }
 
   onRoomImageUpload(event: Event, color: AppColor) {

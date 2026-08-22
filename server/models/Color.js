@@ -15,7 +15,12 @@ const colorSchema = new mongoose.Schema({
   description: { type: String },
   swatchImage: { type: String },
   usageCount: { type: Number, default: 0 },
-  status: { type: String, enum: ['active', 'inactive'], default: 'active' }
+  status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+  colorCode: { type: String },
+  pricePerUnit: { type: Number, default: 250 },
+  unit: { type: String, default: 'Swatch' },
+  stock: { type: Number, default: 100 },
+  isAvailable: { type: Boolean, default: true }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Color', colorSchema);

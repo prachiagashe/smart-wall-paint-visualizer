@@ -1,0 +1,67 @@
+<div class="cart-page">
+  <div class="container">
+    <h1 class="page-title">Your Cart</h1>
+    
+    <div class="cart-layout" *ngIf="cartItems.length > 0; else emptyCart">
+      <div class="cart-items">
+        <div class="cart-item" *ngFor="let item of cartItems">
+          <div class="item-swatch" [style.backgroundColor]="item.hexCode"></div>
+          
+          <div class="item-details">
+            <h3 class="item-name">{{ item.colorName }}</h3>
+            <p class="item-finish">Finish: {{ item.finish }}</p>
+            <p class="item-price">₹{{ item.price }} / unit</p>
+          </div>
+          
+          <div class="item-quantity">
+            <button (click)="decreaseQuantity(item)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button (click)="increaseQuantity(item)">+</button>
+          </div>
+          
+          <div class="item-subtotal">
+            ₹{{ item.subtotal }}
+          </div>
+          
+          <button class="remove-btn" (click)="removeItem(item)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </div>
+      </div>
+      
+      <div class="order-summary">
+        <h2>Order Summary</h2>
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <span>₹{{ subtotal }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax (18%)</span>
+          <span>₹{{ tax }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Delivery Charge</span>
+          <span>{{ deliveryCharge === 0 ? 'Free' : '₹' + deliveryCharge }}</span>
+        </div>
+        
+        <div class="summary-total">
+          <span>Grand Total</span>
+          <span>₹{{ grandTotal }}</span>
+        </div>
+        
+        <button class="checkout-btn" (click)="proceedToCheckout()">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+    
+    <ng-template #emptyCart>
+      <div class="empty-cart-message">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <h2>Your cart is empty</h2>
+        <p>Looks like you haven't added any colors to your cart yet.</p>
+        <button routerLink="/colors" class="btn-primary">Explore Colors</button>
+      </div>
+    </ng-template>
+  </div>
+</div>

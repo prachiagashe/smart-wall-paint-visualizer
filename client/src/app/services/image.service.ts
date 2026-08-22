@@ -20,6 +20,11 @@ export interface AppColor {
   swatchImage?: string;
   usageCount?: number;
   status?: string;
+  colorCode?: string;
+  pricePerUnit?: number;
+  unit?: string;
+  stock?: number;
+  isAvailable?: boolean;
 }
 
 @Injectable({
@@ -33,7 +38,7 @@ export class ImageService {
 
   // Robust set of 20 realistic paint colors as fallback
   private fallbackColors: AppColor[] = [
-    { id: 1, name: "Ocean Breeze", hex: "#8FA9B8", category: "Cool", family: "Blue", tone: "Medium", temperature: "Cool", finishes: ["Matte", "Satin", "Glossy"], description: "A calm coastal blue-grey that opens up compact rooms.", rooms: ["Living Room", "Bedroom", "Bathroom"], styles: ["Modern", "Minimal"] },
+    { id: 1, name: "Ocean Breeze", hex: "#8FA9B8", category: "Cool", family: "Blue", tone: "Medium", temperature: "Cool", finishes: ["Matte", "Satin", "Glossy"], description: "A calm coastal blue-grey that opens up compact rooms.", rooms: ["Living Room", "Bedroom", "Bathroom"], styles: ["Modern", "Minimal"], pricePerUnit: 250, unit: 'Swatch', stock: 100, isAvailable: true },
     { id: 2, name: "Sage Green", hex: "#879C76", category: "Cool", family: "Green", tone: "Medium", temperature: "Cool", finishes: ["Matte", "Satin"], description: "Muted botanical green for calm and natural interiors.", rooms: ["Bedroom", "Study"], styles: ["Modern", "Classic"] },
     { id: 3, name: "Warm Beige", hex: "#D9C7AE", category: "Warm", family: "Brown", tone: "Light", temperature: "Warm", finishes: ["Matte", "Satin"], description: "A soft sand neutral that flatters warm evening lighting.", rooms: ["Living Room", "Bedroom"], styles: ["Classic", "Luxury"] },
     { id: 4, name: "Soft Grey", hex: "#BFBFBA", category: "Neutral", family: "Grey", tone: "Light", temperature: "Neutral", finishes: ["Matte", "Satin", "Glossy"], description: "Balanced grey with a whisper of green for softer shadows.", rooms: ["Kitchen", "Living Room"], styles: ["Minimal", "Modern"] },
