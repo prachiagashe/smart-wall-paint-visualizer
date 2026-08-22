@@ -259,23 +259,28 @@ export class ColorsComponent implements OnInit {
   }
 
   addToCart(color: AppColor) {
-    const action = () => {
-      const finish = this.selectedFinishes[color.id.toString()] || (color.finishes && color.finishes[0]) || 'Matte';
-      
-      this.cartService.addToCart({
-        productId: color.id,
-        finish: finish,
-        quantity: this.modalQuantity
-      });
-      
-      this.toastMessage = `${this.modalQuantity}x ${color.name} added to cart.`;
-      this.showToast = true;
-      setTimeout(() => {
-        this.showToast = false;
-      }, 3000);
-    };
-
-    this.authService.requireLogin(action);
+    const finish = this.selectedFinishes[color.id.toString()] || (color.finishes && color.finishes[0]) || 'Matte';
+    
+    this.cartService.addToCart({
+      productId: color.id.toString(),
+      name: color.name,
+      colorCode: color.colorCode || '',
+      hexCode: color.hex,
+      finish: finish,
+      quantity: this.modalQuantity,
+      price: color.pricePerUnit || 250
+    });
+    
+    // Open the cart popup
+    this.cartService.openCart();
+    
+    this.toastMessage = `${this.modalQuantity}x ${color.name} added to cart.`;
+    this.showToast = true;
+    setTimeout(() => {
+      this.showToast = false;
+    }, 3000);
+    
+    this.closeModal();
   }
 
   buyNow(color: AppColor) {

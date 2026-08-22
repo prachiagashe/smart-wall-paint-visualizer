@@ -19,9 +19,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isProfileMenuOpen: boolean = false;
   isCartOpen: boolean = false;
   cartCount: number = 0;
+  cartItems: any[] = [];
+  cartTotal: number = 0;
   isScrolled: boolean = false;
   
   private cartSub!: Subscription;
+  private cartItemsSub!: Subscription;
+  private cartOpenSub!: Subscription;
 
   constructor(public authService: AuthService, private router: Router, private cartService: CartService) {
     // Listen to router events to close mobile menu on navigation
@@ -36,10 +40,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.cartSub = this.cartService.cartCount$.subscribe(count => {
       this.cartCount = count;
     });
+    this.cartItemsSub = this.cartService.cartItems$.subscribe(items => {
+      this.cartItems = items;
+      this.cartTotal = this.cartService.getCartTotal();
+    });
+    this.cartOpenSub = this.cartService.isCartOpen$.subscribe(isOpen => {
+      this.isCartOpen = isOpen;
+      if (isOpen) {
+        this.isProfileMenuOpen = false;
+      }
+    });
   }
 
   ngOnDestroy() {
     if (this.cartSub) this.cartSub.unsubscribe();
+    if (this.cartItemsSub) this.cartItemsSub.unsubscribe();
+    if (this.cartOpenSub) this.cartOpenSub.unsubscribe();
   }
 
   // Auth Gating Methods
@@ -70,9 +86,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   toggleCart(event: Event) {
+    event.preventDefault();
     event.stopPropagation();
-    this.isCartOpen = !this.isCartOpen;
-    this.isProfileMenuOpen = false;
+    this.cartService.toggleCart();
   }
 
   @HostListener('document:click', ['$event'])
@@ -85,5 +101,28 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.authService.logout();
     this.isProfileMenuOpen = false;
     this.router.navigate(['/']);
+  }
+
+  // Cart helper methods
+  increaseQuantity(item: any, event: Event) {
+    event.stopPropagation();
+    this.cartService.updateQuantity(item.id, item.quantity + 1);
+  }
+
+  decreaseQuantity(item: any, event: Event) {
+    event.stopPropagation();
+    if (item.quantity > 1) {
+      this.cartService.updateQuantity(item.id, item.quantity - 1);
+    }
+  }
+
+  removeItem(item: any, event: Event) {
+    event.stopPropagation();
+    this.cartService.removeFromCart(item.id);
+  }
+
+  goToCheckout() {
+    this.cartService.closeCart();
+    this.router.navigate(['/checkout']);
   }
 }

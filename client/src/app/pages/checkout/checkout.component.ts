@@ -40,7 +40,7 @@ export class CheckoutComponent implements OnInit {
     
     // Fallback: If not from "Buy Now", fetch the entire cart
     if (!this.checkoutItems || this.checkoutItems.length === 0) {
-      await this.cartService.loadCart();
+      this.cartService.loadCart();
       this.checkoutItems = this.cartService.getCartItems();
     }
     
@@ -97,7 +97,7 @@ export class CheckoutComponent implements OnInit {
       const order = await this.orderService.createOrder(payload);
       this.orderService.clearTempCheckoutItems();
       // Ensure local cart count is synced if they bought the entire cart
-      await this.cartService.loadCart(); 
+      this.cartService.loadCart(); 
       this.router.navigate(['/order-success'], { queryParams: { orderId: order._id } });
     } catch (error: any) {
       this.isProcessing = false;

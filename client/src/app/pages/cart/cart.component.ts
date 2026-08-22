@@ -20,8 +20,8 @@ export class CartComponent implements OnInit {
     private router: Router
   ) {}
 
-  async ngOnInit() {
-    await this.cartService.loadCart();
+  ngOnInit() {
+    this.cartService.loadCart();
     this.cartItems = this.cartService.getCartItems();
   }
 
@@ -42,23 +42,23 @@ export class CartComponent implements OnInit {
     return this.subtotal + this.tax + this.deliveryCharge;
   }
 
-  async increaseQuantity(item: CartItem) {
-    if (item._id) {
-      await this.cartService.updateQuantity(item._id, item.quantity + 1);
+  increaseQuantity(item: CartItem) {
+    if (item.id) {
+      this.cartService.updateQuantity(item.id, item.quantity + 1);
       this.cartItems = this.cartService.getCartItems();
     }
   }
 
-  async decreaseQuantity(item: CartItem) {
-    if (item._id && item.quantity > 1) {
-      await this.cartService.updateQuantity(item._id, item.quantity - 1);
+  decreaseQuantity(item: CartItem) {
+    if (item.id && item.quantity > 1) {
+      this.cartService.updateQuantity(item.id, item.quantity - 1);
       this.cartItems = this.cartService.getCartItems();
     }
   }
 
-  async removeItem(item: CartItem) {
-    if (item._id) {
-      await this.cartService.removeItem(item._id);
+  removeItem(item: CartItem) {
+    if (item.id) {
+      this.cartService.removeFromCart(item.id);
       this.cartItems = this.cartService.getCartItems();
     }
   }

@@ -99,7 +99,7 @@
             <div class="preview-item" *ngFor="let item of checkoutItems">
               <div class="swatch" [style.backgroundColor]="item.hexCode"></div>
               <div class="info">
-                <h4>{{ item.colorName }}</h4>
+                <h4>{{ item.name }}</h4>
                 <p>Qty: {{ item.quantity }} | {{ item.finish }}</p>
               </div>
               <div class="price">₹{{ item.price * item.quantity }}</div>

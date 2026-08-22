@@ -80,12 +80,57 @@
 
       <!-- Cart Icon -->
       <div class="popover-wrapper">
-        <a class="icon-link cart-icon" title="Cart" routerLink="/cart">
+        <a class="icon-link cart-icon" title="Cart" (click)="toggleCart($event)" style="cursor: pointer;">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
           </svg>
           <span class="badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
         </a>
+        
+        <!-- Cart Dropdown -->
+        <div class="popover-menu cart-menu" *ngIf="isCartOpen" (click)="$event.stopPropagation()">
+          <div class="cart-header">
+            <p>YOU HAVE {{ cartCount }} ITEMS</p>
+          </div>
+          
+          <div class="cart-items-container" *ngIf="cartItems.length > 0; else emptyCart">
+            <div class="cart-item" *ngFor="let item of cartItems">
+              <div class="item-image">
+                <img *ngIf="item.image" [src]="item.image" [alt]="item.name">
+                <div *ngIf="!item.image && item.hexCode" class="color-swatch" [style.background-color]="item.hexCode"></div>
+                <div *ngIf="!item.image && !item.hexCode" class="placeholder-img"></div>
+              </div>
+              <div class="item-details">
+                <span class="item-name">{{ item.name }}</span>
+                <span class="item-price">₹{{ item.price }}</span>
+              </div>
+              <div class="item-actions">
+                <div class="qty-controls">
+                  <button (click)="decreaseQuantity(item, $event)">&minus;</button>
+                  <span>{{ item.quantity }}</span>
+                  <button (click)="increaseQuantity(item, $event)">+</button>
+                </div>
+                <button class="remove-btn" (click)="removeItem(item, $event)" title="Remove item">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <ng-template #emptyCart>
+            <div class="empty-cart-message">
+              <p>YOUR CART IS EMPTY</p>
+            </div>
+          </ng-template>
+
+          <div class="cart-footer" *ngIf="cartItems.length > 0">
+            <div class="total-row">
+              <span>Total Amount</span>
+              <span class="total-price">₹{{ cartTotal }}</span>
+            </div>
+            <button class="checkout-btn" (click)="goToCheckout()">Checkout &rarr;</button>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -1,99 +1,108 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 export interface CartItem {
-  _id?: string;
-  productId: string;
-  colorName: string;
-  colorCode: string;
-  hexCode: string;
-  finish: string;
-  quantity: number;
+  id: string | number;
+  productId?: string;
+  name: string; // Product or Color name
+  colorCode?: string;
+  hexCode?: string;
+  finish?: string;
+  image?: string;
   price: number;
+  quantity: number;
   subtotal: number;
-}
-
-export interface Cart {
-  _id?: string;
-  userId: string;
-  items: CartItem[];
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class CartService {
-  private apiUrl = 'http://localhost:5000/api/cart';
   private cartItems: CartItem[] = [];
   private cartCountSubject = new BehaviorSubject<number>(0);
+  private cartItemsSubject = new BehaviorSubject<CartItem[]>([]);
+  private isCartOpenSubject = new BehaviorSubject<boolean>(false);
   
   cartCount$ = this.cartCountSubject.asObservable();
+  cartItems$ = this.cartItemsSubject.asObservable();
+  isCartOpen$ = this.isCartOpenSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.loadCart();
   }
 
-  private getAuthHeaders() {
-    const token = localStorage.getItem('token');
-    return { headers: new HttpHeaders({ 'Authorization': `Bearer ${token}` }) };
-  }
-
-  async loadCart() {
-    const token = localStorage.getItem('token');
-    if (!token) {
+  loadCart() {
+    const savedCart = localStorage.getItem('smartpaint_cart');
+    if (savedCart) {
+      try {
+        this.cartItems = JSON.parse(savedCart);
+      } catch (e) {
+        this.cartItems = [];
+      }
+    } else {
       this.cartItems = [];
-      this.updateCount();
-      return;
+    }
+    this.updateCartState();
+  }
+
+  saveCart() {
+    localStorage.setItem('smartpaint_cart', JSON.stringify(this.cartItems));
+  }
+
+  addToCart(item: Partial<CartItem>) {
+    // Generate a unique ID if not present (combination of productId and finish, etc.)
+    const itemId = item.id || `${item.productId || item.name}-${item.finish || 'default'}`;
+    
+    const existingItemIndex = this.cartItems.findIndex(i => i.id === itemId);
+
+    if (existingItemIndex > -1) {
+      // Increase quantity if item exists
+      this.cartItems[existingItemIndex].quantity += (item.quantity || 1);
+      this.cartItems[existingItemIndex].subtotal = this.cartItems[existingItemIndex].quantity * this.cartItems[existingItemIndex].price;
+    } else {
+      // Add new item
+      const price = item.price || 250;
+      const qty = item.quantity || 1;
+      const newItem: CartItem = {
+        id: itemId,
+        name: item.name || 'Visualization Sheet',
+        price: price,
+        quantity: qty,
+        subtotal: price * qty,
+        colorCode: item.colorCode,
+        hexCode: item.hexCode,
+        finish: item.finish,
+        image: item.image,
+        productId: item.productId
+      };
+      this.cartItems.push(newItem);
     }
 
-    try {
-      const cart = await firstValueFrom(this.http.get<Cart>(this.apiUrl, this.getAuthHeaders()));
-      this.cartItems = cart?.items || [];
-      this.updateCount();
-    } catch (error) {
-      console.error('Failed to load cart', error);
-      this.cartItems = [];
-      this.updateCount();
+    this.saveCart();
+    this.updateCartState();
+  }
+
+  updateQuantity(itemId: string | number, newQuantity: number) {
+    if (newQuantity < 1) newQuantity = 1;
+    
+    const index = this.cartItems.findIndex(i => i.id === itemId);
+    if (index > -1) {
+      this.cartItems[index].quantity = newQuantity;
+      this.cartItems[index].subtotal = newQuantity * this.cartItems[index].price;
+      this.saveCart();
+      this.updateCartState();
     }
   }
 
-  private updateCount() {
-    const count = this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    this.cartCountSubject.next(count);
+  removeFromCart(itemId: string | number) {
+    this.cartItems = this.cartItems.filter(i => i.id !== itemId);
+    this.saveCart();
+    this.updateCartState();
   }
 
-  async addToCart(item: { productId: string | number, finish: string, quantity: number }) {
-    try {
-      const cart = await firstValueFrom(this.http.post<Cart>(this.apiUrl, item, this.getAuthHeaders()));
-      this.cartItems = cart?.items || [];
-      this.updateCount();
-    } catch (error) {
-      console.error('Failed to add to cart', error);
-      throw error;
-    }
-  }
-
-  async updateQuantity(itemId: string, quantity: number) {
-    try {
-      const cart = await firstValueFrom(this.http.put<Cart>(`${this.apiUrl}/${itemId}`, { quantity }, this.getAuthHeaders()));
-      this.cartItems = cart?.items || [];
-      this.updateCount();
-    } catch (error) {
-      console.error('Failed to update quantity', error);
-      throw error;
-    }
-  }
-
-  async removeItem(itemId: string) {
-    try {
-      const cart = await firstValueFrom(this.http.delete<Cart>(`${this.apiUrl}/${itemId}`, this.getAuthHeaders()));
-      this.cartItems = cart?.items || [];
-      this.updateCount();
-    } catch (error) {
-      console.error('Failed to remove item', error);
-      throw error;
-    }
+  // Alias for backward compatibility if needed
+  async removeItem(itemId: string | number) {
+    this.removeFromCart(itemId);
   }
 
   getCartItems(): CartItem[] {
@@ -104,13 +113,32 @@ export class CartService {
     return this.cartItems.reduce((sum, item) => sum + item.subtotal, 0);
   }
 
-  async clearCart() {
-    try {
-      await firstValueFrom(this.http.delete(this.apiUrl, this.getAuthHeaders()));
-      this.cartItems = [];
-      this.updateCount();
-    } catch (error) {
-      console.error('Failed to clear cart', error);
-    }
+  clearCart() {
+    this.cartItems = [];
+    this.saveCart();
+    this.updateCartState();
+  }
+
+  private updateCartState() {
+    this.cartItemsSubject.next([...this.cartItems]);
+    this.updateCartCount();
+  }
+
+  private updateCartCount() {
+    const count = this.cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    this.cartCountSubject.next(count);
+  }
+
+  // UI State Management for Cart Dropdown
+  toggleCart() {
+    this.isCartOpenSubject.next(!this.isCartOpenSubject.value);
+  }
+  
+  openCart() {
+    this.isCartOpenSubject.next(true);
+  }
+  
+  closeCart() {
+    this.isCartOpenSubject.next(false);
   }
 }

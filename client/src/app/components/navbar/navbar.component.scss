@@ -198,12 +198,127 @@ $transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
       }
       
       &.cart-menu {
-        padding: 24px;
-        width: 260px;
-        text-align: center;
+        padding: 0;
+        width: 320px;
+        text-align: left;
         
-        p { margin: 0 0 8px; font-weight: 600; font-size: 1rem; position: relative; z-index: 2;}
-        small { color: $text-light; line-height: 1.4; display: block; position: relative; z-index: 2;}
+        .cart-header {
+          padding: 16px 20px;
+          border-bottom: 1px solid $border-color;
+          p { margin: 0; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.5px; color: $text-dark; }
+        }
+
+        .cart-items-container {
+          max-height: 300px;
+          overflow-y: auto;
+          
+          .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #F3F4F6;
+            gap: 12px;
+            
+            .item-image {
+              width: 50px;
+              height: 50px;
+              border-radius: 8px;
+              overflow: hidden;
+              border: 1px solid #EAE6DF;
+              flex-shrink: 0;
+              
+              img { width: 100%; height: 100%; object-fit: cover; }
+              .color-swatch, .placeholder-img { width: 100%; height: 100%; }
+              .placeholder-img { background: #F3F4F6; }
+            }
+            
+            .item-details {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              
+              .item-name { font-weight: 600; font-size: 0.9rem; color: $text-dark; margin-bottom: 4px; }
+              .item-price { font-size: 0.85rem; color: $text-light; }
+            }
+            
+            .item-actions {
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              gap: 8px;
+              
+              .qty-controls {
+                display: flex;
+                align-items: center;
+                border: 1px solid $border-color;
+                border-radius: 4px;
+                
+                button {
+                  background: transparent;
+                  border: none;
+                  padding: 2px 8px;
+                  cursor: pointer;
+                  font-size: 1rem;
+                  color: $text-dark;
+                  &:hover { background: #F3F4F6; }
+                }
+                span {
+                  padding: 0 4px;
+                  font-size: 0.85rem;
+                  font-weight: 500;
+                  min-width: 16px;
+                  text-align: center;
+                }
+              }
+              
+              .remove-btn {
+                background: transparent;
+                border: none;
+                color: #EF4444;
+                cursor: pointer;
+                padding: 4px;
+                opacity: 0.7;
+                transition: opacity 0.2s;
+                &:hover { opacity: 1; }
+              }
+            }
+          }
+        }
+        
+        .empty-cart-message {
+          padding: 32px 20px;
+          text-align: center;
+          p { margin: 0; font-weight: 600; color: $text-light; }
+        }
+
+        .cart-footer {
+          padding: 20px;
+          background: #F9FAFB;
+          border-top: 1px solid $border-color;
+          
+          .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: $text-dark;
+            
+            .total-price { font-size: 1.1rem; }
+          }
+          
+          .checkout-btn {
+            width: 100%;
+            padding: 12px;
+            background: $text-dark;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            &:hover { background: $primary-green; }
+          }
+        }
       }
     }
   }
