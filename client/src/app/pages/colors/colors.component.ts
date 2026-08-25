@@ -289,7 +289,9 @@ export class ColorsComponent implements OnInit {
       const price = color.pricePerUnit || 250;
       
       this.orderService.setTempCheckoutItems([{
+        id: color.id.toString(),
         productId: color.id.toString(),
+        name: color.name,
         colorName: color.name,
         colorCode: color.colorCode || '',
         hexCode: color.hex,

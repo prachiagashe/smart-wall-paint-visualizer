@@ -5,6 +5,7 @@ export interface CartItem {
   id: string | number;
   productId?: string;
   name: string; // Product or Color name
+  colorName?: string;
   colorCode?: string;
   hexCode?: string;
   finish?: string;
