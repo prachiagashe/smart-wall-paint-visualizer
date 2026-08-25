@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { Subscription } from 'rxjs';
+import { SavedColoursService } from '../../services/saved-colours.service';
 
 @Component({
   selector: 'app-navbar',
@@ -23,11 +24,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
   cartTotal: number = 0;
   isScrolled: boolean = false;
   
+  savedCount: number = 0;
+  currentUser: any = null;
+  
   private cartSub!: Subscription;
   private cartItemsSub!: Subscription;
   private cartOpenSub!: Subscription;
+  private savedSub!: Subscription;
+  private userSub!: Subscription;
 
-  constructor(public authService: AuthService, private router: Router, private cartService: CartService) {
+  constructor(
+    public authService: AuthService, 
+    private router: Router, 
+    private cartService: CartService,
+    private savedColoursService: SavedColoursService
+  ) {
     // Listen to router events to close mobile menu on navigation
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -50,12 +61,20 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.isProfileMenuOpen = false;
       }
     });
+    this.savedSub = this.savedColoursService.savedCount$.subscribe(count => {
+      this.savedCount = count;
+    });
+    this.userSub = this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+    });
   }
 
   ngOnDestroy() {
     if (this.cartSub) this.cartSub.unsubscribe();
     if (this.cartItemsSub) this.cartItemsSub.unsubscribe();
     if (this.cartOpenSub) this.cartOpenSub.unsubscribe();
+    if (this.savedSub) this.savedSub.unsubscribe();
+    if (this.userSub) this.userSub.unsubscribe();
   }
 
   // Auth Gating Methods

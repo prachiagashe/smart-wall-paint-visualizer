@@ -104,8 +104,8 @@ export class RegisterComponent implements OnInit {
 
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
-        if (res.token) {
-          localStorage.setItem('token', res.token);
+        if (res.token && res.user) {
+          this.authService.setLoggedInUser(res.user, res.token);
         }
         this.successMessage = 'Login successful!';
         setTimeout(() => {

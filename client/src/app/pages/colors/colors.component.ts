@@ -6,6 +6,7 @@ import { ImageService, AppColor } from '../../services/image.service';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
+import { SavedColoursService } from '../../services/saved-colours.service';
 
 @Component({
   selector: 'app-colors',
@@ -19,7 +20,6 @@ export class ColorsComponent implements OnInit {
   sortBy: string = 'Popular';
   
   allColors: AppColor[] = [];
-  favoriteIds: Set<string | number> = new Set<string | number>();
   isLoading: boolean = true;
   
   // Category Navigation
@@ -61,7 +61,8 @@ export class ColorsComponent implements OnInit {
     private router: Router, 
     private route: ActivatedRoute,
     private cartService: CartService,
-    private orderService: OrderService
+    private orderService: OrderService,
+    private savedColoursService: SavedColoursService
   ) {}
 
   async ngOnInit() {
@@ -71,7 +72,6 @@ export class ColorsComponent implements OnInit {
     });
 
     await this.loadData();
-    await this.loadFavorites();
   }
 
   async loadData() {
@@ -85,50 +85,30 @@ export class ColorsComponent implements OnInit {
     this.isLoading = false;
   }
 
-  async loadFavorites() {
-    if (this.authService.isLoggedIn()) {
-      const favs = await this.imageService.getFavorites();
-      this.favoriteIds = new Set(favs.map(f => f.id));
-    } else {
-      const saved = localStorage.getItem('smartpaint_favorites');
-      if (saved) {
-        try { this.favoriteIds = new Set(JSON.parse(saved)); } catch (e) {}
-      }
-    }
-  }
-
-  async toggleFavorite(color: AppColor, event?: Event) {
+  toggleFavorite(color: AppColor, event?: Event) {
     if (event) event.stopPropagation();
 
     // Action Gating
-    const action = async () => {
-      const isFav = this.favoriteIds.has(color.id);
-      if (isFav) {
-        this.favoriteIds.delete(color.id);
-        if (this.authService.isLoggedIn()) await this.imageService.removeFavorite(color.id);
+    const action = () => {
+      if (this.savedColoursService.isSaved(color.id)) {
+        this.savedColoursService.removeSavedColour(color.id);
       } else {
-        this.favoriteIds.add(color.id);
-        if (this.authService.isLoggedIn()) await this.imageService.addFavorite(color.id);
-      }
-
-      if (!this.authService.isLoggedIn()) {
-        localStorage.setItem('smartpaint_favorites', JSON.stringify(Array.from(this.favoriteIds)));
+        this.savedColoursService.addSavedColour(color.id);
       }
     };
 
-    // If they aren't logged in, pop the modal and cache the action
-    this.authService.requireLogin(action);
+    this.authService.requireLogin(action, '/login');
   }
 
   isFavorite(id: string | number): boolean {
-    return this.favoriteIds.has(id);
+    return this.savedColoursService.isSaved(id);
   }
 
   get filteredColors(): AppColor[] {
     let filtered = this.allColors;
 
     if (this.showOnlySaved) {
-      filtered = filtered.filter(c => this.favoriteIds.has(c.id));
+      filtered = filtered.filter(c => this.savedColoursService.isSaved(c.id));
     }
 
     // Horizontal Category Nav

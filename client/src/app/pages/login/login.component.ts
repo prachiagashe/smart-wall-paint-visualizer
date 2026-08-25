@@ -31,8 +31,7 @@ export class LoginComponent {
       next: (res) => {
         this.isLoading = false;
         if (res.success && res.token) {
-          localStorage.setItem('token', res.token);
-          localStorage.setItem('user', JSON.stringify(res.user));
+          this.authService.setLoggedInUser(res.user, res.token);
           
           // Execute any pending action that was blocked by the auth gate
           this.authService.executePendingAction();

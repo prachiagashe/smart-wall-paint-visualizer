@@ -14,12 +14,15 @@ import { MyOrdersComponent } from './pages/my-orders/my-orders.component';
 import { OrderDetailsComponent } from './pages/order-details/order-details.component';
 import { authGuard } from './guards/auth.guard';
 
+import { SavedColorsComponent } from './pages/saved-colors/saved-colors.component';
+
 export const routes: Routes = [
   { path: '', component: DashboardComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'how-it-works', component: HowItWorksComponent },
   { path: 'colors', component: ColorsComponent },
+  { path: 'saved-colors', component: SavedColorsComponent, canActivate: [authGuard] },
   { path: 'upload', component: UploadComponent, canActivate: [authGuard] },
   { path: 'editor', component: EditorComponent, canActivate: [authGuard] },
   { path: 'visualizer', component: VisualizerComponent },

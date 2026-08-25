@@ -10,6 +10,15 @@ exports.getFavorites = async (req, res) => {
   }
 };
 
+exports.getFavoritesCount = async (req, res) => {
+  try {
+    const count = await Favorite.countDocuments({ user: req.user._id });
+    res.json({ count });
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching favorites count', error: err.message });
+  }
+};
+
 exports.addFavorite = async (req, res) => {
   try {
     const { colorId } = req.body;

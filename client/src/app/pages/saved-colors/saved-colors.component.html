@@ -1,0 +1,34 @@
+<div class="saved-colors-page">
+  <div class="container">
+    <h1 class="page-title">Saved Colours</h1>
+    
+    <div class="empty-state" *ngIf="savedColours.length === 0">
+      <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+      </svg>
+      <h2>No saved colours yet.</h2>
+      <p>Save your favorite colours to easily find them later.</p>
+      <button routerLink="/colors" class="btn-primary">Explore Colours</button>
+    </div>
+
+    <div class="colors-grid" *ngIf="savedColours.length > 0">
+      <div class="color-card" *ngFor="let color of savedColours">
+        <div class="color-preview" [style.backgroundColor]="color.hex">
+          <button class="favorite-btn active" (click)="unlikeColor(color)" title="Remove from favorites">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="color-info">
+          <h3>{{ color.name }}</h3>
+          <p class="hex-code">{{ color.hex }} <span *ngIf="color.colorCode">| {{ color.colorCode }}</span></p>
+          <div class="action-buttons">
+            <button class="btn-outline-small" (click)="tryColor(color)">Try This Color</button>
+            <button class="btn-primary-small" (click)="addToCart(color)">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

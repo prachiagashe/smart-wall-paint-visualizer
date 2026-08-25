@@ -17,7 +17,18 @@ export class AuthService {
   private pendingAction: (() => void) | null = null;
   private pendingRoute: string | null = null;
 
+  private currentUserSubject = new BehaviorSubject<any>(this.getUserFromStorage());
+  public currentUser$ = this.currentUserSubject.asObservable();
+
   constructor(private http: HttpClient, private router: Router) { }
+
+  private getUserFromStorage(): any {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try { return JSON.parse(userStr); } catch (e) { return null; }
+    }
+    return null;
+  }
 
   register(userData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, userData);
@@ -32,11 +43,7 @@ export class AuthService {
   }
 
   getUser(): any {
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try { return JSON.parse(userStr); } catch (e) { return null; }
-    }
-    return null;
+    return this.currentUserSubject.value;
   }
 
   isAdmin(): boolean {
@@ -47,9 +54,17 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    this.currentUserSubject.next(null);
     // Clear any pending actions just in case
     this.pendingAction = null;
     this.pendingRoute = null;
+  }
+
+  // Method to update user after successful login
+  setLoggedInUser(user: any, token: string): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    this.currentUserSubject.next(user);
   }
 
   // --- Auth Gating Logic ---
