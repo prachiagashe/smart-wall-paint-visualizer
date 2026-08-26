@@ -25,7 +25,7 @@
         <div class="canvas-container" [class.split-view]="isBeforeAfterMode">
           
           <!-- Original Image (Always sits at bottom) -->
-          <img [src]="imageUrl" alt="Original Room" class="base-image" [style.filter]="!showOriginal ? 'brightness(' + (brightness / 100) + ')' : 'none'">
+          <img #baseImage [src]="imageUrl" alt="Original Room" class="base-image" [style.filter]="!showOriginal ? 'brightness(' + (brightness / 100) + ')' : 'none'" crossorigin="anonymous">
           
           <!-- Colored Overlay (clipped by polygon) -->
           <div class="color-overlay-wrapper" 
@@ -52,11 +52,21 @@
         </div>
 
         <div class="bottom-actions">
-          <button class="btn-outline-primary" (click)="toggleOriginal()">
-            {{ showOriginal ? 'Show Painted Version' : 'Show Original' }}
-          </button>
+          <div class="left-actions">
+            <button class="btn-outline-primary" (click)="toggleOriginal()">
+              {{ showOriginal ? 'Show Painted' : 'Show Original' }}
+            </button>
+            <button class="btn-outline-primary" (click)="downloadPreview()" [disabled]="isDownloading">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              {{ isDownloading ? 'Preparing...' : 'Download Preview' }}
+            </button>
+            <button class="btn-outline-primary" (click)="sharePreview()" [disabled]="isDownloading">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              Share Preview
+            </button>
+          </div>
           <div class="right-actions">
-            <button class="btn-outline-primary" (click)="downloadImage()">Download</button>
+            <button class="btn-outline-primary" (click)="downloadOriginal()">Download Original</button>
             <button class="btn-primary" (click)="saveDesign()">Save Design</button>
           </div>
         </div>
